@@ -23,7 +23,7 @@ public class Walls {
 	public void draw(PApplet p) {
 		
 		p.stroke((float)0.5);
-		p.strokeWeight(2);
+		p.strokeWeight(4);
    	    for (Wall wall : this.walls.values()) {
    	    	p.line((float)(wall.getxFrom()*Simulation.SCALE),(float)(wall.getyFrom()*Simulation.SCALE),(float)(wall.getxTo()*Simulation.SCALE),(float)(wall.getyTo()*Simulation.SCALE));
         }

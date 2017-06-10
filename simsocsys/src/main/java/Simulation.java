@@ -56,7 +56,7 @@ public class Simulation {
         Node n4 = net.createNode(02.53, 02.80, 4);
         Node n5 = net.createNode(02.53, 03.30, 5);
         Node n6 = net.createNode(03.18, 02.15, 6);
-        Node n7 = net.createNode(02.53, 00.50, 7);
+        Node n7 = net.createNode(02.53, -9.00, 7);
         Node n8 = net.createNode(01.00, 02.15, 8);
         Node n9 = net.createNode(04.06, 02.15, 9);
         
@@ -66,7 +66,7 @@ public class Simulation {
         Node n14 = net.createNode(06.45, 02.80, 14);
         Node n15 = net.createNode(06.45, 03.30, 15);
         Node n16 = net.createNode(07.10, 02.15, 16);
-        Node n17 = net.createNode(06.45, 00.50, 17);
+        Node n17 = net.createNode(06.45, -9.00, 17);
         Node n18 = net.createNode(04.95, 02.15, 18);
         Node n19 = net.createNode(07.88, 02.15, 19);
       
