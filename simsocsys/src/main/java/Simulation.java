@@ -56,77 +56,7 @@ public class Simulation {
     	int pEnter = 1;
 
         Network net = new Network();
-        Node n1 = net.createNode(02.53, 01.00, 1);
-        Node n2 = net.createNode(02.53, 01.50, 2);
-        Node n3 = net.createNode(01.88, 02.15, 3);
-        Node n4 = net.createNode(02.53, 02.80, 4);
-        Node n5 = net.createNode(02.53, 03.30, 5);
-        Node n6 = net.createNode(03.18, 02.15, 6);
-        Node n7 = net.createNode(02.53, -9.00, 7);
-        Node n8 = net.createNode(01.00, 02.15, 8);
-        Node n9 = net.createNode(04.06, 02.15, 9);
-        
-        Node n11 = net.createNode(06.45, 01.00, 11);
-        Node n12 = net.createNode(06.45, 01.50, 12);
-        Node n13 = net.createNode(05.80, 02.15, 13);
-        Node n14 = net.createNode(06.45, 02.80, 14);
-        Node n15 = net.createNode(06.45, 03.30, 15);
-        Node n16 = net.createNode(07.10, 02.15, 16);
-        Node n17 = net.createNode(06.45, -9.00, 17);
-        Node n18 = net.createNode(04.95, 02.15, 18);
-        Node n19 = net.createNode(07.88, 02.15, 19);
-      
-        Link l0 	= net.createLink(n1, n7, 1, 0);
-        Link l0_rev = net.createLink(n7, n1, 2, 0);
-        Link l1 	= net.createLink(n1, n2, 3, 1);
-        Link l1_rev = net.createLink(n2, n1, 4, 1);
-        Link l2 	= net.createLink(n2, n3, 5, 1);
-        Link l2_rev = net.createLink(n3, n2, 6, 1);
-        Link l3 	= net.createLink(n2, n6, 7, 1);
-        Link l3_rev = net.createLink(n6, n2, 8, 1);
-        Link l4 	= net.createLink(n2, n4, 9, 1);
-        Link l4_rev = net.createLink(n4 ,n2, 10, 1);
-        Link l5 	= net.createLink(n4, n6, 11, 1);
-        Link l5_rev = net.createLink(n6 ,n4, 12, 1);
-        Link l6 	= net.createLink(n4, n5, 13, 1);
-        Link l6_rev = net.createLink(n5 ,n4, 14, 1);
-        Link l7 	= net.createLink(n3, n6, 15, 1);
-        Link l7_rev = net.createLink(n6 ,n3, 16, 1);
-        Link l8 	= net.createLink(n3, n4, 17, 1);
-        Link l8_rev = net.createLink(n4 ,n3, 18, 1);
-        Link l9 	= net.createLink(n3, n8, 17, 1);
-        Link l9_rev = net.createLink(n8 ,n3, 18, 1);
-        Link l91 	= net.createLink(n6, n9, 17, 1);
-        Link l91_rev= net.createLink(n9 ,n6, 18, 1);
-        Link l92 	= net.createLink(n9, n18, 17, 1);
-        Link l92_rev= net.createLink(n18 ,n9, 18, 1);
-        
-        
-        Link l10 		= net.createLink(n11, n17, 1, 0);
-        Link l10_rev 	= net.createLink(n17, n11, 2, 0);
-        Link l11 		= net.createLink(n11, n12, 3, 1);
-        Link l11_rev	= net.createLink(n12, n11, 4, 1);
-        Link l12 		= net.createLink(n12, n13, 5, 1);
-        Link l12_rev	= net.createLink(n13, n12, 6, 1);
-        Link l13 		= net.createLink(n12, n16, 7, 1);
-        Link l13_rev	= net.createLink(n16, n12, 8, 1);
-        Link l14 		= net.createLink(n12, n14, 9, 1);
-        Link l14_rev	= net.createLink(n14 ,n12, 10, 1);
-        Link l15 		= net.createLink(n14, n16, 11, 1);
-        Link l15_rev	= net.createLink(n16 ,n14, 12, 1);
-        Link l16 		= net.createLink(n14, n15, 13, 1);
-        Link l16_rev	= net.createLink(n15 ,n14, 14, 1);
-        Link l17 		= net.createLink(n13, n16, 15, 1);
-        Link l17_rev	= net.createLink(n16 ,n13, 16, 1);
-        Link l18 		= net.createLink(n13, n14, 17, 1);
-        Link l18_rev	= net.createLink(n14 ,n13, 18, 1);
-        Link l19 		= net.createLink(n13, n18, 17, 1);
-        Link l19_rev 	= net.createLink(n18 ,n13, 18, 1);
-        Link l191 		= net.createLink(n16, n19, 17, 1);
-        Link l191_rev	= net.createLink(n19 ,n16, 18, 1);
-//        Link l192 		= net.createLink(n19, n28, 17, 1);
-//        Link l192_rev	= net.createLink(n28 ,n19, 18, 1);
-        
+              
         
 //        Node n0 = net.createNode(1,1,1);
 //        Node n1 = net.createNode(7,1,2);
@@ -181,8 +111,8 @@ public class Simulation {
         
         Dijkstra dijkstra = new Dijkstra();
         Simulation sim = new Simulation(net, walls);
-        List<Link> route3 = dijkstra.findRoute(02.53, 01.50, n7); 
-        List<Link> route4 = dijkstra.findRoute(03.18, 02.15, n7);
+        List<Link> route3 = dijkstra.findRoute(02.53, 01.50, net.getNodes().get(7)); 
+        List<Link> route4 = dijkstra.findRoute(03.18, 02.15, net.getNodes().get(7));
 
         
         Vehicle v1 = new Vehicle(0, 2.15, route3, 1);
