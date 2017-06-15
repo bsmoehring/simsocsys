@@ -34,7 +34,7 @@ public class Vis extends PApplet {
 
     private List<VehicleInfo> vehs = new ArrayList<>();
 
-    private static final int WIDTH = 800;
+    private static final int WIDTH = 1500;
     private static final int HEIGHT = 600;
 
     private int x = 0;
