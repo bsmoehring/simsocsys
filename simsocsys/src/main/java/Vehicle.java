@@ -61,6 +61,12 @@ public class Vehicle {
 
     public void update(List<Vehicle> vehs) {
     	
+    	if (this.waiting){
+    		this.speed = 0.1;
+    	} else {
+    		this.speed = 1.34;
+    	}
+    	
     	Link currentLink;
     	currentLink = route.get(this.routeIndex);
 
@@ -71,8 +77,8 @@ public class Vehicle {
         dx /= dist;
         dy /= dist;
         
-//        dx *= this.speed;
-//        dy *= this.speed;
+        dx *= this.speed;
+        dy *= this.speed;
         
         dx -= vx;
         dy -= vy;
@@ -93,9 +99,9 @@ public class Vehicle {
         this.vy += ay * Simulation.H;
         
         double speed = Math.sqrt(this.vx*this.vx+this.vy*this.vy);
-        if(speed>this.speed*2){
-        	this.vx /= speed/2;
-        	this.vy /= speed/2;
+        if(speed>this.speed){
+        	this.vx /= speed;
+        	this.vy /= speed;
         }
 
         this.phi = Math.atan2(vy,vx);

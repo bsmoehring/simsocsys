@@ -8,18 +8,17 @@ import java.util.Map.Entry;
 
 public class Dijkstra {
 	
-	private Map<Integer,Node> nodes = new HashMap<Integer,Node>();
-	
-	public Dijkstra(Map<Integer, Node> nodes) {
+	public Dijkstra() {
 		
-		this.nodes = nodes;
 	}
 
-	public List<Link> findRoute(Node start, Node destination){
+	public List<Link> findRoute(double xFrom, double yFrom, Node destination){
+		
+		Node start = getClosestNode(xFrom, yFrom);
 		
 //		create Maps for costs and predecessor. add all nodes with maximum costs but without predecessors. start node with costs 0.
 		List<NodeInfo> nodeInfos = new LinkedList<NodeInfo>();
-		for (Entry<Integer, Node> entry : nodes.entrySet()){
+		for (Entry<Integer, Node> entry : Simulation.net.getNodes().entrySet()){
 			NodeInfo nodeInfo = new NodeInfo();
 			nodeInfo.cost = Double.POSITIVE_INFINITY;
 			nodeInfo.node = entry.getValue();
@@ -63,6 +62,21 @@ public class Dijkstra {
 		
 	}
 	
+	private Node getClosestNode(double xFrom, double yFrom) {
+
+		Node closest = null; 
+		double closestDistance = Double.POSITIVE_INFINITY;
+		for (Node n : Simulation.net.getNodes().values()){
+			double nodeDistance = (xFrom-n.getX())*(xFrom-n.getX())+(yFrom-n.getY())*(yFrom-n.getY());
+			if (nodeDistance<closestDistance){
+				closestDistance = nodeDistance;
+				closest = n;
+			}
+		}
+		
+		return closest;
+	}
+
 	private void expandGraph(Node nodeCurrent) {
 		
 		for(Link entry : nodeCurrent.getOutLinks()){

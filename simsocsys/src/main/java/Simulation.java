@@ -45,10 +45,15 @@ public class Simulation {
 
     public Simulation(Network net, Walls walls) {
     	Simulation.walls = walls;
-        this.vis = new Vis(net, walls);
+        Simulation.net = net;
+    	this.vis = new Vis(net, walls);
+        
     }
 
     public static void main(String[] args) {
+    	
+    	int pLeave = 1;
+    	int pEnter = 1;
 
         Network net = new Network();
         Node n1 = net.createNode(02.53, 01.00, 1);
@@ -174,11 +179,12 @@ public class Simulation {
 //	    rooms.addRoom(room);
        
         
-        Dijkstra dijkstra = new Dijkstra(net.getNodes());
-        List<Link> route3 = dijkstra.findRoute(n2, n7);
-        List<Link> route4 = dijkstra.findRoute(n6, n7);
-
+        Dijkstra dijkstra = new Dijkstra();
         Simulation sim = new Simulation(net, walls);
+        List<Link> route3 = dijkstra.findRoute(02.53, 01.50, n7); 
+        List<Link> route4 = dijkstra.findRoute(03.18, 02.15, n7);
+
+        
         Vehicle v1 = new Vehicle(0, 2.15, route3, 1);
         Vehicle v2 = new Vehicle(4, 2.15, route4, 2);
         sim.add(v1);
