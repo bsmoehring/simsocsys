@@ -20,6 +20,7 @@
 
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -194,8 +195,12 @@ public class Simulation {
             for (Vehicle v : this.vehs) {
                 v.update(this.vehs);
             }
-            for (Vehicle v : this.vehs) {
-                v.move();
+            Iterator<Vehicle> it = this.vehs.iterator();
+            while (it.hasNext()) {
+                Vehicle v = it.next();
+                if(!v.move()){
+                	it.remove();
+                }
             }
 
             //

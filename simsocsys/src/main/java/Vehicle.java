@@ -40,7 +40,7 @@ public class Vehicle {
     private double speed = 1.34;
     private double tau = 0.5;
     private double weight = 80.0;
-    private boolean finished = false;
+    private boolean waiting = false;
     
 //    abstoßende Kräfte
     private double r = 0.3;
@@ -93,9 +93,9 @@ public class Vehicle {
         this.vy += ay * Simulation.H;
         
         double speed = Math.sqrt(this.vx*this.vx+this.vy*this.vy);
-        if(speed>this.speed){
-        	this.vx /= speed;
-        	this.vy /= speed;
+        if(speed>this.speed*2){
+        	this.vx /= speed/2;
+        	this.vy /= speed/2;
         }
 
         this.phi = Math.atan2(vy,vx);
@@ -225,7 +225,7 @@ public class Vehicle {
     	return force;
     }
 
-    public void move() {
+    public boolean move() {
         this.x = this.x + Simulation.H * this.vx;
         this.y = this.y + Simulation.H * this.vy;
 
@@ -234,9 +234,10 @@ public class Vehicle {
         if (currentLink.hasVehicleReachedEndOfLink(this)) {
             this.routeIndex++;
             if (this.routeIndex == this.route.size() ){
-            	this.routeIndex = this.route.size() - 1;
+            	return false;
             }
         }
+        return true;
     }
 
     public double getX() {
@@ -279,9 +280,9 @@ public class Vehicle {
 		return id;
 	}
 
-	public boolean isFinished() {
+	public boolean isWaiting() {
 		
-		return this.finished;
+		return this.waiting;
 	}
 
 }
