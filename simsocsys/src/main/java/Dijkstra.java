@@ -12,9 +12,10 @@ public class Dijkstra {
 		
 	}
 
-	public List<Link> findRoute(double xFrom, double yFrom, Node destination){
+	public List<Link> findRoute(double xFrom, double yFrom, int dest){
 		
 		Node start = getClosestNode(xFrom, yFrom);
+		Node destination = Simulation.net.getNodes().get(dest);
 		
 //		create Maps for costs and predecessor. add all nodes with maximum costs but without predecessors. start node with costs 0.
 		List<NodeInfo> nodeInfos = new LinkedList<NodeInfo>();

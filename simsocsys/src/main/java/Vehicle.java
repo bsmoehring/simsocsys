@@ -35,17 +35,16 @@ public class Vehicle {
     private final int id;
     private double vx = 0;
     private double vy = 0;
-    private double length = 0.4;
-    private double width = 0.2;
     private double speed = 1.34;
     private double tau = 0.5;
     private double weight = 80.0;
     private boolean waiting = false;
-    
-//    abstoßende Kräfte
+    private boolean entering;
+
+	//    abstoßende Kräfte
     private double r = 0.3;
-    
-    private double x;
+
+	private double x;
     private double y;
     private double phi = 0;//radian!!
 
@@ -77,8 +76,8 @@ public class Vehicle {
         dx /= dist;
         dy /= dist;
         
-        dx *= this.speed;
-        dy *= this.speed;
+//        dx *= this.speed;
+//        dy *= this.speed;
         
         dx -= vx;
         dy -= vy;
@@ -133,8 +132,8 @@ public class Vehicle {
     	        double dx = (this.x - veh.getX())/dist;
     	        double dy = (this.y - veh.getY())/dist;
     	        
-    			fx = dx*f;
-    			fy = dy*f;
+    			fx += dx*f;
+    			fy += dy*f;
     			
     			if (this.r + veh.r >= dist)	{
     				
@@ -274,14 +273,6 @@ public class Vehicle {
         return phi;
     }
 
-    public double getWidth() {
-        return width;
-    }
-
-    public double getLength() {
-        return length;
-    }
-
 	public int getId() {
 		return id;
 	}
@@ -290,5 +281,20 @@ public class Vehicle {
 		
 		return this.waiting;
 	}
+    
+    public boolean isEntering() {
+		return entering;
+	}
 
+	public void setEntering(boolean entering) {
+		this.entering = entering;
+	}
+    
+    public double getR() {
+		return r;
+	}
+
+	public void setR(double r) {
+		this.r = r;
+	}
 }

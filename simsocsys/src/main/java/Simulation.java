@@ -52,41 +52,13 @@ public class Simulation {
 
     public static void main(String[] args) {
     	
-    	int pLeave = 1;
+    	int pLeave = 2;
     	int pEnter = 1;
 
         Network net = new Network();
-              
-        
-//        Node n0 = net.createNode(1,1,1);
-//        Node n1 = net.createNode(7,1,2);
-//        Node n2 = net.createNode(7,3,3);
-//        Node n3 = net.createNode(2,3,4);
-//        Node n4 = net.createNode(1,5,5);
-//        Node n5 = net.createNode(7,5,6);
-//        Link l0 	= net.createLink(n0, n1, 1, 1);
-//        Link l0_rev = net.createLink(n1, n0, 2, 1);
-//        Link l1 	= net.createLink(n1, n2, 3, 1);
-//        Link l1_rev = net.createLink(n2, n1, 4, 1);
-//        Link l2 	= net.createLink(n2, n3, 5, 1);
-//        Link l2_rev = net.createLink(n3, n2, 6, 1);
-//        Link l3 	= net.createLink(n3, n4, 7, 1);
-//        Link l3_rev = net.createLink(n4, n3, 8, 1);
-//        Link l4 	= net.createLink(n4, n5, 9, 1);
-//        Link l4_rev = net.createLink(n5 ,n4, 10, 1);
-//        Link l5 	= net.createLink(n0, n3, 11, 1);
-//        Link l5_rev = net.createLink(n3 ,n0, 12, 1);
-//        List<Link> route = new ArrayList<>();
-//        route.add(l0);
-//        route.add(l1);
-//        route.add(l2);
-//        route.add(l3);
-//        route.add(l4);
-//        route.add(l2);
-//        List<Link> route2 = new ArrayList<>();
         
         Walls walls = new Walls();
-        Wall w1 = walls.createWall(00.35, 1.00, 01.88, 1.00, 1);
+        Wall w1 = walls.createWall(00.35, 1.00, 01.88, 1.00, 1); 
         Wall w2 = walls.createWall(03.18, 1.00, 05.80, 1.00, 2);
         Wall w3 = walls.createWall(07.10, 1.00, 09.72, 1.00, 3);
         Wall w4 = walls.createWall(11.02, 1.00, 12.55, 1.00, 4);
@@ -111,14 +83,21 @@ public class Simulation {
         
         Dijkstra dijkstra = new Dijkstra();
         Simulation sim = new Simulation(net, walls);
-        List<Link> route3 = dijkstra.findRoute(02.53, 01.50, net.getNodes().get(7)); 
-        List<Link> route4 = dijkstra.findRoute(03.18, 02.15, net.getNodes().get(7));
+//        List<Link> route3 = dijkstra.findRoute(02.53, 01.50, net.getNodes().get(7)); 
+//        List<Link> route4 = dijkstra.findRoute(03.18, 02.15, net.getNodes().get(7));
 
+        for (int i = 1 ; i <= 10; i++){
+//        	0.0 12.55 1.0 3.0
+        	double xFrom = Math.random()*2.55;
+        	double yFrom = Math.random()*2+1;
+        	Vehicle v = new Vehicle(xFrom, yFrom, dijkstra.findRoute(xFrom, yFrom, 7), i);
+        	sim.add(v);
+        }
         
-        Vehicle v1 = new Vehicle(0, 2.15, route3, 1);
-        Vehicle v2 = new Vehicle(4, 2.15, route4, 2);
-        sim.add(v1);
-        sim.add(v2);
+//        Vehicle v1 = new Vehicle(0, 2.15, route3, 1);
+//        Vehicle v2 = new Vehicle(4, 2.15, route4, 2);
+//        sim.add(v1);
+//        sim.add(v2);
         sim.run();
 
     }
@@ -142,7 +121,7 @@ public class Simulation {
             //
             List<VehicleInfo> vInfos = new ArrayList<>();
             for (Vehicle v : this.vehs) {
-                VehicleInfo vi = new VehicleInfo(v.getX(), v.getY(), v.getPhi(), v.getLength(), v.getWidth());
+                VehicleInfo vi = new VehicleInfo(v.getX(), v.getY(), v.getR());
                 vInfos.add(vi);
             }
             this.vis.update(time, vInfos);

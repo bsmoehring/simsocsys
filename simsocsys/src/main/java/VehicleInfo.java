@@ -35,34 +35,22 @@ public class VehicleInfo {
 
     private final double phi;
 
+    private final int r;
 
-    private final int length;
-    private final int width;
-
-    public VehicleInfo(double x, double y, double phi, double length, double width) {
+    public VehicleInfo(double x, double y, double r) {
         this.x = (int) (Simulation.SCALE * x);
         this.y = (int) (Simulation.SCALE * y);
-        this.phi = phi;
+        this.phi = 0;
 
-        this.length = (int) (Simulation.SCALE * length);
-        this.width = (int) (Simulation.SCALE * width);
+        this.r = (int) (Simulation.SCALE * r);
     }
 
     public void draw(PApplet p) {
         p.pushMatrix();
 
         p.translate(x, y);
-
-        p.rotate((float) (phi));
-
-        p.fill(255, 64, 64, 200);
-//        p.stroke(255,0,0);
-        p.rect(-length / 2, -width / 2, length, width);
-        p.ellipseMode(PConstants.CENTER);
-        p.fill(255, 0, 0);
-        p.ellipse(length / 2, -width / 2, 10, 10);
         p.fill(0, 0, 255);
-        p.ellipse(length / 2, width / 2, 10, 10);
+        p.ellipse(0, 0, this.r, this.r);
         p.popMatrix();
 
 
