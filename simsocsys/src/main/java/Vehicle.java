@@ -35,7 +35,7 @@ public class Vehicle {
     private final int id;
     private double vx = 0;
     private double vy = 0;
-    private double speed = 1.00;
+    private double speed;
     private double tau = 0.5;
     private double weight = 80.0;
     private boolean waiting = false;
@@ -93,23 +93,22 @@ public class Vehicle {
         Force repellingForceWalls = new Force();
         repellingForceWalls = repellingForceWalls();
         
-        double fx = (this.weight * dx / this.tau) + repellingForceAgents.getFx() + repellingForceWalls.getFx();
-        double fy = (this.weight * dy / this.tau) + repellingForceAgents.getFy() + repellingForceWalls.getFy();
+        double fx = (this.weight * dx / this.tau) + repellingForceAgents.getFx()/4 + repellingForceWalls.getFx()/2;
+        double fy = (this.weight * dy / this.tau) + repellingForceAgents.getFy()/4 + repellingForceWalls.getFy()/2;
 
         double ax = fx / this.weight;
         double ay = fy / this.weight;
         
-////      //TODO: geschwindigkeit limitieren
-        double speed = Math.sqrt(ax*ax+ay*ay);
-      	if(speed>this.speed){
-      		double v = Math.abs(ax+ay);
-      		ax = (ax/v)*this.speed;
-      		ay = (ay/v)*this.speed;
-      	}
-      
         this.vx += ax * Simulation.H;
         this.vy += ay * Simulation.H;
 
+        //TODO: geschwindigkeit limitieren
+    	if(Math.sqrt(this.vx*this.vx+this.vy*this.vy)>this.speed){
+    		double v = Math.abs(this.vx+this.vy);
+    		this.vx = (this.vx/v);
+    		this.vy = (this.vy/v);
+    	}
+    
         this.phi = Math.atan2(this.vy,this.vx);
 
     }
@@ -316,5 +315,12 @@ public class Vehicle {
 
 	public void setWaiting(boolean waiting) {
 		this.waiting = waiting;
+	}
+	public boolean hasRoute(){
+		if(this.route != null){
+			return true;
+		} else{
+			return false;
+		}
 	}
 }
