@@ -31,7 +31,7 @@ public class Simulation {
 
     public static final double SCALE = 100;
 
-    public static final double H = 0.001;
+    public static final double H = 0.01;
     
     public static final double A = 2000;
     public static final double B = 0.08;
@@ -54,20 +54,27 @@ public class Simulation {
     	
     	int pLeave = 2;
     	int pEnter = 1;
-    	double minX = 0;
-    	double maxX = 2.55;
+    	double minX = 0.4;
+    	double maxX = 2.5;
 
         Network net = new Network();
         
         Walls walls = new Walls();
-        Wall w1 = walls.createWall(00.35, 1.00, 01.88, 1.00, 1); 
-        Wall w2 = walls.createWall(03.18, 1.00, 05.80, 1.00, 2);
-        Wall w3 = walls.createWall(07.10, 1.00, 09.72, 1.00, 3);
-        Wall w4 = walls.createWall(11.02, 1.00, 12.55, 1.00, 4);
-        Wall w5 = walls.createWall(00.35, 3.30, 01.88, 3.30, 5);
-        Wall w6 = walls.createWall(03.18, 3.30, 05.80, 3.30, 6);
-        Wall w7 = walls.createWall(07.10, 3.30, 09.72, 3.30, 7);
-        Wall w8 = walls.createWall(11.02, 3.30, 12.55, 3.30, 8);
+        Wall w1 = walls.createWall(00.35, 1.00, 01.88, 1.00, false, 1); 
+        Wall w2 = walls.createWall(03.18, 1.00, 05.80, 1.00, false, 2);
+        Wall w3 = walls.createWall(07.10, 1.00, 09.72, 1.00, false, 3);
+        Wall w4 = walls.createWall(11.02, 1.00, 12.55, 1.00, false, 4);
+        Wall w5 = walls.createWall(00.35, 3.30, 01.88, 3.30, false, 5);
+        Wall w6 = walls.createWall(03.18, 3.30, 05.80, 3.30, false, 6);
+        Wall w7 = walls.createWall(07.10, 3.30, 09.72, 3.30, false, 7);
+        Wall w8 = walls.createWall(11.02, 3.30, 12.55, 3.30, false, 8);
+        Wall w9 = walls.createWall(00.35, 1.00, 00.35, 3.30, false, 9);
+ 
+        Wall d1 = walls.createWall(01.88, 1.00, 03.18, 1.00, true, 101);
+        Wall d2 = walls.createWall(01.88, 3.30, 03.18, 3.30, true, 102);
+        Wall d3 = walls.createWall(05.80, 1.00, 07.10, 1.00, true, 103);
+        Wall d4 = walls.createWall(05.80, 3.30, 07.10, 3.30, true, 104);
+        
         
 //        Rooms rooms = new Rooms();
 //        List<Link> roomLinks = new LinkedList<Link>();
@@ -89,9 +96,10 @@ public class Simulation {
 //        List<Link> route4 = dijkstra.findRoute(03.18, 02.15, net.getNodes().get(7));
 
         for (int i = 1 ; i <= 10; i++){
-        	double xFrom = Math.random()*maxX;
-        	double yFrom = Math.random()*2+1;
+        	double xFrom = Math.random()*maxX+minX;
+        	double yFrom = Math.random()*1.9+1.1;
         	Vehicle v = new Vehicle(xFrom, yFrom, dijkstra.findRoute(xFrom, yFrom, 7), i);
+        	v.setWaiting(false);
         	sim.add(v);
         }
 //        for (int i = 1 ; i <= 10; i++){
@@ -114,6 +122,14 @@ public class Simulation {
 
         double maxTime = 1000;
         while (time < maxTime) {
+        	
+        	if (time > 10) {
+        		for (Wall w : this.walls.getWalls().values())
+        			if (w.isDoor()){
+        				w.setOpen(true);
+        			}
+        	}        	
+        	
             for (Vehicle v : this.vehs) {
                 v.update(this.vehs);
             }

@@ -28,7 +28,7 @@ import processing.core.PVector;
 /**
  * Created by laemmel on 18/04/16.
  */
-public class Vehicle {
+public class Vehicle extends HasCoords{
 
 
     private final List<Link> route;
@@ -63,12 +63,13 @@ public class Vehicle {
     	double dx = 0;
     	double dy = 0;
     	
+    	if (this.waiting){
+    		this.speed = 0.1;
+    	} else {
+    		this.speed = 1.34;
+    	}
+    	
     	if (route != null){
-	    	if (this.waiting){
-	    		this.speed = 0.1;
-	    	} else {
-	    		this.speed = 1.34;
-	    	}
 	    	
 	    	Link currentLink;
 	    	currentLink = route.get(this.routeIndex);
@@ -105,8 +106,8 @@ public class Vehicle {
         //TODO: geschwindigkeit limitieren
     	if(Math.sqrt(this.vx*this.vx+this.vy*this.vy)>this.speed){
     		double v = Math.abs(this.vx+this.vy);
-    		this.vx = (this.vx/v);
-    		this.vy = (this.vy/v);
+    		this.vx = (this.vx/v)*this.speed;
+    		this.vy = (this.vy/v)*this.speed;
     	}
     
         this.phi = Math.atan2(this.vy,this.vx);
@@ -124,7 +125,7 @@ public class Vehicle {
     		
     		if ( veh != this){
     			    			
-    			double dist =  vehicleDistance(veh);
+    			double dist =  pointDistance(veh);
     			double distR = (this.r + veh.r - dist);
     			
     			double f = Simulation.A * Math.pow(Math.E, (distR/Simulation.B));
@@ -167,7 +168,7 @@ public class Vehicle {
     	
     }
     
-    public double vehicleDistance(Vehicle v1){
+    public double pointDistance(HasCoords v1){
     	
         double dx = v1.getX() - this.x;
         double dy = v1.getY() - this.y;
@@ -186,51 +187,54 @@ public class Vehicle {
     	
     	for(Wall wall : Simulation.walls.getWalls().values()){
     		
-    		PVector wFrom 	= new PVector((float)wall.getxFrom(), (float) wall.getyFrom());
-    		PVector wTo 	= new PVector((float)wall.getxTo(), (float) wall.getyTo());
-    		PVector closest = new PVector();    		
-    		
-    		double distance ;
-    		
-			float vx = veh.x-wFrom.x; 
-			float vy = veh.y-wFrom.y;   // v = wFrom->veh
-			float ux = wTo.x-wFrom.x;
-			float uy = wTo.y-wFrom.y;   // u = wFrom->wTo
-			float det = vx*ux + vy*uy; 
-			float len = ux*ux + uy*uy;    // len = u^2
-			
-			if (det <= 0){ 	// its outside the line segment near wFrom
-			  closest.set(wFrom); 
-			} else if (det >= len){ // its outside the line segment near wTo
-			  closest.set(wTo);  
-			} else {// its near line segment between wFrom and wTo
-				float ex = (float) (ux / Math.sqrt(len));    	// e = u / |u^2|
-				float ey = (float) (uy / Math.sqrt(len));
-				float f = ex * vx + ey * vy;  					// f = e . v
-				closest.set(wFrom.x + f * ex, wFrom.y + f * ey);           				// S = wFrom + f * e
-			}
-			distance = Math.sqrt(Math.pow(closest.x-veh.x, 2) + Math.pow(closest.y-veh.y, 2));
-			DecimalFormat df = new DecimalFormat("#.##");
-//	    	System.out.println(this.getId() + " " + wall.getId() + " " + df.format(distance) + " " + closest.x + " " + closest.y);
-			double distR = this.r - distance;
-			double dx = (veh.x - closest.x) / distance;
-			double dy = (veh.y - closest.y) / distance;
-			double f = Simulation.A * Math.pow(Math.E, (distR / Simulation.B));
-			if (distance <= this.r) {
-				f = f + (Simulation.K * distR);
-			}
-
-			double fx = f * (dx);
-			double fy = f * (dy);
-			if (distance <= this.r) {
-				double tx = -dy;
-				double ty = dx; 
-				fx = fx - Simulation.KAPPA * distR * this.vx * tx * tx;
-				fy = fy - Simulation.KAPPA * distR * this.vy * ty * ty;
-			}
-			
-			force.setFx(force.getFx()+fx);
-			force.setFy(force.getFy()+fy);
+    		if (!wall.isDoor() || !wall.isOpen()){
+	    		
+	    		PVector wFrom 	= new PVector((float)wall.getxFrom(), (float) wall.getyFrom());
+	    		PVector wTo 	= new PVector((float)wall.getxTo(), (float) wall.getyTo());
+	    		PVector closest = new PVector();    		
+	    		
+	    		double distance ;
+	    		
+				float vx = veh.x-wFrom.x; 
+				float vy = veh.y-wFrom.y;   // v = wFrom->veh
+				float ux = wTo.x-wFrom.x;
+				float uy = wTo.y-wFrom.y;   // u = wFrom->wTo
+				float det = vx*ux + vy*uy; 
+				float len = ux*ux + uy*uy;    // len = u^2
+				
+				if (det <= 0){ 	// its outside the line segment near wFrom
+				  closest.set(wFrom); 
+				} else if (det >= len){ // its outside the line segment near wTo
+				  closest.set(wTo);  
+				} else {// its near line segment between wFrom and wTo
+					float ex = (float) (ux / Math.sqrt(len));    	// e = u / |u^2|
+					float ey = (float) (uy / Math.sqrt(len));
+					float f = ex * vx + ey * vy;  					// f = e . v
+					closest.set(wFrom.x + f * ex, wFrom.y + f * ey);           				// S = wFrom + f * e
+				}
+				distance = Math.sqrt(Math.pow(closest.x-veh.x, 2) + Math.pow(closest.y-veh.y, 2));
+				DecimalFormat df = new DecimalFormat("#.##");
+	//	    	System.out.println(this.getId() + " " + wall.getId() + " " + df.format(distance) + " " + closest.x + " " + closest.y);
+				double distR = this.r - distance;
+				double dx = (veh.x - closest.x) / distance;
+				double dy = (veh.y - closest.y) / distance;
+				double f = Simulation.A * Math.pow(Math.E, (distR / Simulation.B));
+				if (distance <= this.r) {
+					f = f + (Simulation.K * distR);
+				}
+	
+				double fx = f * (dx);
+				double fy = f * (dy);
+				if (distance <= this.r) {
+					double tx = -dy;
+					double ty = dx; 
+					fx = fx - Simulation.KAPPA * distR * this.vx * tx * tx;
+					fy = fy - Simulation.KAPPA * distR * this.vy * ty * ty;
+				}
+				
+				force.setFx(force.getFx()+fx);
+				force.setFy(force.getFy()+fy);
+    		}
     	}	    	
     	
     	return force;
@@ -242,7 +246,11 @@ public class Vehicle {
 
         if (this.route != null){
 	        Link currentLink = this.route.get(this.routeIndex);
-	        if (currentLink.hasVehicleReachedEndOfLink(this)) {
+	        
+	        if (currentLink.hasVehicleReachedEndOfLink(this) 
+	        		//possible way to ease destination mistakes by focusing on a node in a wrong direction
+	        		|| pointDistance(this.route.get(this.routeIndex).getTo()) < this.r
+	        		) {
 	            this.routeIndex++;
 	            if (this.routeIndex == this.route.size() ){
 	            	return false;

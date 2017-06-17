@@ -13,9 +13,9 @@ public class Walls {
    	}
    	
    	
-   	public Wall createWall(double xFrom, double yFrom, double xTo, double yTo, int id){
+   	public Wall createWall(double xFrom, double yFrom, double xTo, double yTo, boolean door, int id){
    		
-   		Wall w = new Wall( xFrom, yFrom, xTo, yTo, id);
+   		Wall w = new Wall( xFrom, yFrom, xTo, yTo, door, id);
    		this.walls.put(id, w);
    		return w;
    	}
@@ -25,8 +25,10 @@ public class Walls {
 		p.stroke((float)0.5);
 		p.strokeWeight(4);
    	    for (Wall wall : this.walls.values()) {
-   	    	p.line((float)(wall.getxFrom()*Simulation.SCALE),(float)(wall.getyFrom()*Simulation.SCALE),(float)(wall.getxTo()*Simulation.SCALE),(float)(wall.getyTo()*Simulation.SCALE));
-        }
+   	    	if(!wall.isDoor() || !wall.isOpen()){
+   	    		p.line((float)(wall.getxFrom()*Simulation.SCALE),(float)(wall.getyFrom()*Simulation.SCALE),(float)(wall.getxTo()*Simulation.SCALE),(float)(wall.getyTo()*Simulation.SCALE));
+   	    	}
+   	    }
 
 	}
 

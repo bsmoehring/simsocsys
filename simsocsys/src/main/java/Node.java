@@ -4,7 +4,7 @@ import java.util.List;
 /**
  * Created by laemmel on 27.04.17.
  */
-public class Node {
+public class Node extends HasCoords{
     private final double x;
    	private final double y;
    	private final int id;
