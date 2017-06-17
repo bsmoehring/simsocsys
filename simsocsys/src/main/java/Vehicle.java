@@ -35,7 +35,7 @@ public class Vehicle {
     private final int id;
     private double vx = 0;
     private double vy = 0;
-    private double speed = 1.34;
+    private double speed = 1.00;
     private double tau = 0.5;
     private double weight = 80.0;
     private boolean waiting = false;
@@ -60,27 +60,32 @@ public class Vehicle {
 
     public void update(List<Vehicle> vehs) {
     	
-    	if (this.waiting){
-    		this.speed = 0.1;
-    	} else {
-    		this.speed = 1.34;
-    	}
+    	double dx = 0;
+    	double dy = 0;
     	
-    	Link currentLink;
-    	currentLink = route.get(this.routeIndex);
-
-        double dx = currentLink.getTo().getX() - this.x;
-        double dy = currentLink.getTo().getY() - this.y;
-
-        double dist = Math.sqrt(dx*dx+dy*dy);
-        dx /= dist;
-        dy /= dist;
-        
-//        dx *= this.speed;
-//        dy *= this.speed;
-        
-        dx -= vx;
-        dy -= vy;
+    	if (route != null){
+	    	if (this.waiting){
+	    		this.speed = 0.1;
+	    	} else {
+	    		this.speed = 1.34;
+	    	}
+	    	
+	    	Link currentLink;
+	    	currentLink = route.get(this.routeIndex);
+	
+	        dx = currentLink.getTo().getX() - this.x;
+	        dy = currentLink.getTo().getY() - this.y;
+	
+	        double dist = Math.sqrt(dx*dx+dy*dy);
+	        dx /= dist;
+	        dy /= dist;
+	        
+	        dx *= this.speed;
+	        dy *= this.speed;
+	        
+	        dx -= vx;
+	        dy -= vy;
+    	}
         
         Force repellingForceAgents = new Force();
         repellingForceAgents = repellingForceAgents(vehs);
@@ -94,16 +99,18 @@ public class Vehicle {
         double ax = fx / this.weight;
         double ay = fy / this.weight;
         
+////      //TODO: geschwindigkeit limitieren
+        double speed = Math.sqrt(ax*ax+ay*ay);
+      	if(speed>this.speed){
+      		double v = Math.abs(ax+ay);
+      		ax = (ax/v)*this.speed;
+      		ay = (ay/v)*this.speed;
+      	}
+      
         this.vx += ax * Simulation.H;
         this.vy += ay * Simulation.H;
-        
-        double speed = Math.sqrt(this.vx*this.vx+this.vy*this.vy);
-        if(speed>this.speed){
-        	this.vx /= speed;
-        	this.vy /= speed;
-        }
 
-        this.phi = Math.atan2(vy,vx);
+        this.phi = Math.atan2(this.vy,this.vx);
 
     }
     
@@ -234,14 +241,15 @@ public class Vehicle {
         this.x = this.x + Simulation.H * this.vx;
         this.y = this.y + Simulation.H * this.vy;
 
-
-        Link currentLink = this.route.get(this.routeIndex);
-        if (currentLink.hasVehicleReachedEndOfLink(this)) {
-            this.routeIndex++;
-            if (this.routeIndex == this.route.size() ){
-            	return false;
-            }
-        }
+        if (this.route != null){
+	        Link currentLink = this.route.get(this.routeIndex);
+	        if (currentLink.hasVehicleReachedEndOfLink(this)) {
+	            this.routeIndex++;
+	            if (this.routeIndex == this.route.size() ){
+	            	return false;
+	            }
+	        }
+        }    
         return true;
     }
 
@@ -296,5 +304,17 @@ public class Vehicle {
 
 	public void setR(double r) {
 		this.r = r;
+	}
+
+	public double getSpeed() {
+		return speed;
+	}
+
+	public void setSpeed(double speed) {
+		this.speed = speed;
+	}
+
+	public void setWaiting(boolean waiting) {
+		this.waiting = waiting;
 	}
 }

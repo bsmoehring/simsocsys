@@ -31,7 +31,7 @@ public class Simulation {
 
     public static final double SCALE = 100;
 
-    public static final double H = 0.01;
+    public static final double H = 0.001;
     
     public static final double A = 2000;
     public static final double B = 0.08;
@@ -54,6 +54,8 @@ public class Simulation {
     	
     	int pLeave = 2;
     	int pEnter = 1;
+    	double minX = 0;
+    	double maxX = 2.55;
 
         Network net = new Network();
         
@@ -87,13 +89,18 @@ public class Simulation {
 //        List<Link> route4 = dijkstra.findRoute(03.18, 02.15, net.getNodes().get(7));
 
         for (int i = 1 ; i <= 10; i++){
-//        	0.0 12.55 1.0 3.0
-        	double xFrom = Math.random()*2.55;
+        	double xFrom = Math.random()*maxX;
         	double yFrom = Math.random()*2+1;
         	Vehicle v = new Vehicle(xFrom, yFrom, dijkstra.findRoute(xFrom, yFrom, 7), i);
         	sim.add(v);
         }
-        
+//        for (int i = 1 ; i <= 10; i++){
+//        	double xFrom = Math.random()*maxX;
+//        	double yFrom = Math.random()*2+1;
+//        	Vehicle v = new Vehicle(xFrom, yFrom, null, 1000+i);
+//        	v.setWaiting(true);
+//        	sim.add(v);
+//        }
 //        Vehicle v1 = new Vehicle(0, 2.15, route3, 1);
 //        Vehicle v2 = new Vehicle(4, 2.15, route4, 2);
 //        sim.add(v1);
