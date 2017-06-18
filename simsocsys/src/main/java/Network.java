@@ -21,7 +21,7 @@ public class Network {
         Node n4 = createNode(02.53, 02.80, 4);
         Node n5 = createNode(02.53, 03.30, 5);
         Node n6 = createNode(03.18, 02.15, 6);
-        Node n7 = createNode(02.53, 0.50, 7);
+        Node n7 = createNode(02.53, -9.00, 7);
         Node n8 = createNode(01.00, 02.15, 8);
         Node n9 = createNode(04.06, 02.15, 9);
         
