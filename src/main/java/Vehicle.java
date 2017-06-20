@@ -31,11 +31,12 @@ import processing.core.PVector;
 public class Vehicle extends HasCoords{
 
 
-    private final List<Link> route;
+    private static List<Link> route;
     private final int id;
     private double vx = 0;
     private double vy = 0;
-    private double speed;
+    private double speed = 1.34;
+    private double maxSpeed = 2.0;
     private double tau = 0.5;
     private double weight = 80.0;
     private boolean waiting = false;
@@ -64,9 +65,9 @@ public class Vehicle extends HasCoords{
     	double dy = 0;
     	
     	if (this.waiting){
-    		this.speed = 0.1;
+    		this.maxSpeed = 0.5;
     	} else {
-    		this.speed = 1.34;
+    		this.maxSpeed = 2.0;
     	}
     	
     	if (route != null){
@@ -94,8 +95,8 @@ public class Vehicle extends HasCoords{
         Force repellingForceWalls = new Force();
         repellingForceWalls = repellingForceWalls();
         
-        double fx = (this.weight * dx / this.tau) + repellingForceAgents.getFx()/4 + repellingForceWalls.getFx()/2;
-        double fy = (this.weight * dy / this.tau) + repellingForceAgents.getFy()/4 + repellingForceWalls.getFy()/2;
+        double fx = (this.weight * dx / this.tau) + repellingForceAgents.getFx()/4 + repellingForceWalls.getFx();
+        double fy = (this.weight * dy / this.tau) + repellingForceAgents.getFy()/4 + repellingForceWalls.getFy();
 
         double ax = fx / this.weight;
         double ay = fy / this.weight;
@@ -104,10 +105,11 @@ public class Vehicle extends HasCoords{
         this.vy += ay * Simulation.H;
 
         //TODO: geschwindigkeit limitieren
-    	if(Math.sqrt(this.vx*this.vx+this.vy*this.vy)>this.speed){
-    		double v = Math.abs(this.vx+this.vy);
-    		this.vx = (this.vx/v)*this.speed;
-    		this.vy = (this.vy/v)*this.speed;
+    	double s = Math.sqrt(this.vx*this.vx+this.vy*this.vy);
+        if(s >this.maxSpeed){
+    		double v = Math.abs(this.vx)+Math.abs(this.vy);
+    		this.vx = (this.vx/v)*this.maxSpeed;
+    		this.vy = (this.vy/v)*this.maxSpeed;
     	}
     
         this.phi = Math.atan2(this.vy,this.vx);
@@ -193,15 +195,13 @@ public class Vehicle extends HasCoords{
 	    		PVector wTo 	= new PVector((float)wall.getxTo(), (float) wall.getyTo());
 	    		PVector closest = new PVector();    		
 	    		
-	    		double distance ;
-	    		
 				float vx = veh.x-wFrom.x; 
 				float vy = veh.y-wFrom.y;   // v = wFrom->veh
 				float ux = wTo.x-wFrom.x;
 				float uy = wTo.y-wFrom.y;   // u = wFrom->wTo
 				float det = vx*ux + vy*uy; 
 				float len = ux*ux + uy*uy;    // len = u^2
-				
+								
 				if (det <= 0){ 	// its outside the line segment near wFrom
 				  closest.set(wFrom); 
 				} else if (det >= len){ // its outside the line segment near wTo
@@ -212,9 +212,9 @@ public class Vehicle extends HasCoords{
 					float f = ex * vx + ey * vy;  					// f = e . v
 					closest.set(wFrom.x + f * ex, wFrom.y + f * ey);           				// S = wFrom + f * e
 				}
-				distance = Math.sqrt(Math.pow(closest.x-veh.x, 2) + Math.pow(closest.y-veh.y, 2));
-				DecimalFormat df = new DecimalFormat("#.##");
-	//	    	System.out.println(this.getId() + " " + wall.getId() + " " + df.format(distance) + " " + closest.x + " " + closest.y);
+				double distance = Math.sqrt(Math.pow(closest.x-veh.x, 2) + Math.pow(closest.y-veh.y, 2));
+//				DecimalFormat df = new DecimalFormat("#.##");
+//		    	System.out.println(this.getId() + " " + wall.getId() + " " + df.format(distance) + " " + closest.x + " " + closest.y);
 				double distR = this.r - distance;
 				double dx = (veh.x - closest.x) / distance;
 				double dy = (veh.y - closest.y) / distance;

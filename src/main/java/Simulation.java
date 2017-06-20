@@ -56,7 +56,7 @@ public class Simulation {
     	int pLeave = 2;
     	int pEnter = 1;
     	double minX = 0.4;
-    	double maxX = 2.5;
+    	double maxX = 5.5;
 
         Network net = new Network();
         
@@ -96,11 +96,11 @@ public class Simulation {
 //        List<Link> route3 = dijkstra.findRoute(02.53, 01.50, net.getNodes().get(7)); 
 //        List<Link> route4 = dijkstra.findRoute(03.18, 02.15, net.getNodes().get(7));
 
-        for (int i = 1 ; i <= 10; i++){
+        for (int i = 1 ; i <= 5; i++){
         	double xFrom = Math.random()*maxX+minX;
         	double yFrom = Math.random()*1.9+1.1;
         	Vehicle v = new Vehicle(xFrom, yFrom, dijkstra.findRoute(xFrom, yFrom, 7), i);
-        	v.setWaiting(false);
+        	v.setWaiting(true);
         	sim.add(v);
         }
 //        for (int i = 1 ; i <= 10; i++){
@@ -131,7 +131,7 @@ public class Simulation {
         			}
     			}
     			this.doorsOpen = true;
-        	}	        	
+        	} 	        	
         	
             for (Vehicle v : this.vehs) {
                 v.update(this.vehs);
