@@ -96,17 +96,17 @@ public class Simulation {
 //        List<Link> route3 = dijkstra.findRoute(02.53, 01.50, net.getNodes().get(7)); 
 //        List<Link> route4 = dijkstra.findRoute(03.18, 02.15, net.getNodes().get(7));
 
-        for (int i = 1 ; i <= 5; i++){
+        for (int i = 1 ; i <= 10; i++){
         	double xFrom = Math.random()*maxX+minX;
         	double yFrom = Math.random()*1.9+1.1;
-        	Vehicle v = new Vehicle(xFrom, yFrom, dijkstra.findRoute(xFrom, yFrom, 7), i);
-        	v.setWaiting(true);
+        	Vehicle v = new Vehicle(xFrom, yFrom, dijkstra.findRoute(xFrom, yFrom, 7), true, i);
+        	v.setWaiting(false);
         	sim.add(v);
         }
 //        for (int i = 1 ; i <= 10; i++){
-//        	double xFrom = Math.random()*maxX;
-//        	double yFrom = Math.random()*2+1;
-//        	Vehicle v = new Vehicle(xFrom, yFrom, null, 1000+i);
+//        	double xFrom = Math.random()*maxX+minX;
+//        	double yFrom = Math.random();
+//        	Vehicle v = new Vehicle(xFrom, yFrom, dijkstra.findRoute(xFrom, yFrom, 8), false, 1000+i);
 //        	v.setWaiting(true);
 //        	sim.add(v);
 //        }
@@ -131,6 +131,7 @@ public class Simulation {
         			}
     			}
     			this.doorsOpen = true;
+    			System.out.println("doors open at: " + time);
         	} 	        	
         	
             for (Vehicle v : this.vehs) {

@@ -31,7 +31,7 @@ import processing.core.PVector;
 public class Vehicle extends HasCoords{
 
 
-    private static List<Link> route;
+    private List<Link> route;
     private final int id;
     private double vx = 0;
     private double vy = 0;
@@ -40,7 +40,7 @@ public class Vehicle extends HasCoords{
     private double tau = 0.5;
     private double weight = 80.0;
     private boolean waiting = false;
-    private boolean entering;
+    private boolean inside;
 
 	//    abstoﬂende Kr‰fte
     private double r = 0.3;
@@ -52,11 +52,12 @@ public class Vehicle extends HasCoords{
 
     private int routeIndex = 0;
 
-    public Vehicle(double x, double y, List<Link> route, int id) {
+    public Vehicle(double x, double y, List<Link> route, boolean inside, int id) {
         this.id = id;
     	this.x = x;
         this.y = y;
         this.route = route;
+        this.inside = inside;
     }
 
     public void update(List<Vehicle> vehs) {
@@ -95,8 +96,8 @@ public class Vehicle extends HasCoords{
         Force repellingForceWalls = new Force();
         repellingForceWalls = repellingForceWalls();
         
-        double fx = (this.weight * dx / this.tau) + repellingForceAgents.getFx()/4 + repellingForceWalls.getFx();
-        double fy = (this.weight * dy / this.tau) + repellingForceAgents.getFy()/4 + repellingForceWalls.getFy();
+        double fx = (this.weight * dx / this.tau) + repellingForceAgents.getFx()/6 + repellingForceWalls.getFx();
+        double fy = (this.weight * dy / this.tau) + repellingForceAgents.getFy()/6 + repellingForceWalls.getFy();
 
         double ax = fx / this.weight;
         double ay = fy / this.weight;
@@ -201,11 +202,14 @@ public class Vehicle extends HasCoords{
 				float uy = wTo.y-wFrom.y;   // u = wFrom->wTo
 				float det = vx*ux + vy*uy; 
 				float len = ux*ux + uy*uy;    // len = u^2
-								
+				
+				boolean endpoint = false;
 				if (det <= 0){ 	// its outside the line segment near wFrom
 				  closest.set(wFrom); 
+				  endpoint = true;
 				} else if (det >= len){ // its outside the line segment near wTo
 				  closest.set(wTo);  
+				  endpoint = true;
 				} else {// its near line segment between wFrom and wTo
 					float ex = (float) (ux / Math.sqrt(len));    	// e = u / |u^2|
 					float ey = (float) (uy / Math.sqrt(len));
@@ -230,6 +234,11 @@ public class Vehicle extends HasCoords{
 					double ty = dx; 
 					fx = fx - Simulation.KAPPA * distR * this.vx * tx * tx;
 					fy = fy - Simulation.KAPPA * distR * this.vy * ty * ty;
+				}
+				
+				if (endpoint){
+					fx /= 20;
+					fy /= 20;
 				}
 				
 				force.setFx(force.getFx()+fx);
@@ -297,14 +306,6 @@ public class Vehicle extends HasCoords{
 		return this.waiting;
 	}
     
-    public boolean isEntering() {
-		return entering;
-	}
-
-	public void setEntering(boolean entering) {
-		this.entering = entering;
-	}
-    
     public double getR() {
 		return r;
 	}
@@ -330,5 +331,13 @@ public class Vehicle extends HasCoords{
 		} else{
 			return false;
 		}
+	}
+
+	public boolean isInside() {
+		return inside;
+	}
+
+	public void setInside(boolean inside) {
+		this.inside = inside;
 	}
 }
