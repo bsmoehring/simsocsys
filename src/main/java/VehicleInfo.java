@@ -29,18 +29,17 @@ import processing.core.PConstants;
  */
 public class VehicleInfo {
 
+	private final int id;
+	
     private final int x;
-    private final int y;
-    
-
-    private final double phi;
+    private final int y;    
 
     private final int r;
 
-    public VehicleInfo(double x, double y, double r) {
+    public VehicleInfo(double x, double y, double r, int id) {
         this.x = (int) (Simulation.SCALE * x);
         this.y = (int) (Simulation.SCALE * y);
-        this.phi = 0;
+        this.id = id;
 
         this.r = (int) (Simulation.SCALE * r);
     }

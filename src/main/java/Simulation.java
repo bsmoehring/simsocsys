@@ -37,7 +37,12 @@ public class Simulation {
     public static final double B = 0.08;
     public static final double K = 120000;
     public static final double KAPPA = 240000;
-
+	
+	public static final double trainMinX = 0.35;
+	public static final double trainMaxX = 11.02;
+	public static final double trainMinY = 1.00;
+	public static final double trainMaxY = 3.00;
+	
     private final Vis vis;
     private static List<Vehicle> vehs = new ArrayList<>();
     public static Network net;
@@ -53,8 +58,8 @@ public class Simulation {
 
     public static void main(String[] args) {
     	
-    	int pLeave = 2;
-    	int pEnter = 1;
+    	int pLeave = 5;
+    	int pEnter = 5;
     	double minX = 0.4;
     	double maxX = 5.5;
 
@@ -96,24 +101,23 @@ public class Simulation {
 //        List<Link> route3 = dijkstra.findRoute(02.53, 01.50, net.getNodes().get(7)); 
 //        List<Link> route4 = dijkstra.findRoute(03.18, 02.15, net.getNodes().get(7));
 
-        for (int i = 1 ; i <= 10; i++){
+        for (int i = 1 ; i <= pLeave; i++){
         	double xFrom = Math.random()*maxX+minX;
         	double yFrom = Math.random()*1.9+1.1;
-        	Vehicle v = new Vehicle(xFrom, yFrom, dijkstra.findRoute(xFrom, yFrom, 7), true, i);
+        	Vehicle v = new Vehicle(xFrom, yFrom, dijkstra.findRoute(xFrom, yFrom, 7), i);
         	v.setWaiting(false);
+        	Counts.leaving++;
         	sim.add(v);
         }
-//        for (int i = 1 ; i <= 10; i++){
-//        	double xFrom = Math.random()*maxX+minX;
-//        	double yFrom = Math.random();
-//        	Vehicle v = new Vehicle(xFrom, yFrom, dijkstra.findRoute(xFrom, yFrom, 8), false, 1000+i);
-//        	v.setWaiting(true);
-//        	sim.add(v);
-//        }
-//        Vehicle v1 = new Vehicle(0, 2.15, route3, 1);
-//        Vehicle v2 = new Vehicle(4, 2.15, route4, 2);
-//        sim.add(v1);
-//        sim.add(v2);
+        for (int i = 1 ; i <= pEnter; i++){
+        	double xFrom = Math.random()*maxX+minX;
+        	double yFrom = Math.random();
+        	Vehicle v = new Vehicle(xFrom, yFrom, dijkstra.findRoute(xFrom, yFrom, 8), 1000+i);
+        	v.setWaiting(true);
+        	Counts.entering++;
+        	sim.add(v);
+        }
+        
         sim.run();
 
     }
@@ -125,19 +129,20 @@ public class Simulation {
         while (time < maxTime) {
         	
         	if (time > 10 && !doorsOpen) {
-        		for (Wall w : this.walls.getWalls().values()){
+        		for (Wall w : Simulation.walls.getWalls().values()){
         			if (w.isDoor()){
         				w.setOpen(true);
         			}
     			}
     			this.doorsOpen = true;
+    			Counts.doorsOpen = time;
     			System.out.println("doors open at: " + time);
         	} 	        	
         	
-            for (Vehicle v : this.vehs) {
-                v.update(this.vehs);
+            for (Vehicle v : Simulation.vehs) {
+                v.update(Simulation.vehs);
             }
-            Iterator<Vehicle> it = this.vehs.iterator();
+            Iterator<Vehicle> it = Simulation.vehs.iterator();
             while (it.hasNext()) {
                 Vehicle v = it.next();
                 if(!v.move()){
@@ -147,9 +152,10 @@ public class Simulation {
 
             //
             List<VehicleInfo> vInfos = new ArrayList<>();
-            for (Vehicle v : this.vehs) {
-                VehicleInfo vi = new VehicleInfo(v.getX(), v.getY(), v.getR());
+            for (Vehicle v : Simulation.vehs) {
+                VehicleInfo vi = new VehicleInfo(v.getX(), v.getY(), v.getR(), v.getId());
                 vInfos.add(vi);
+                
             }
             this.vis.update(time, vInfos);
 
@@ -164,6 +170,6 @@ public class Simulation {
     }
 
     private void add(Vehicle v1) {
-        this.vehs.add(v1);
+        Simulation.vehs.add(v1);
     }
 }

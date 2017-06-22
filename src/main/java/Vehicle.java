@@ -52,12 +52,11 @@ public class Vehicle extends HasCoords{
 
     private int routeIndex = 0;
 
-    public Vehicle(double x, double y, List<Link> route, boolean inside, int id) {
+    public Vehicle(double x, double y, List<Link> route, int id) {
         this.id = id;
     	this.x = x;
         this.y = y;
         this.route = route;
-        this.inside = inside;
     }
 
     public void update(List<Vehicle> vehs) {
@@ -66,9 +65,9 @@ public class Vehicle extends HasCoords{
     	double dy = 0;
     	
     	if (this.waiting){
-    		this.maxSpeed = 0.5;
+    		this.speed = 0.1;
     	} else {
-    		this.maxSpeed = 2.0;
+    		this.speed = 1.34;
     	}
     	
     	if (route != null){
@@ -96,8 +95,8 @@ public class Vehicle extends HasCoords{
         Force repellingForceWalls = new Force();
         repellingForceWalls = repellingForceWalls();
         
-        double fx = (this.weight * dx / this.tau) + repellingForceAgents.getFx()/6 + repellingForceWalls.getFx();
-        double fy = (this.weight * dy / this.tau) + repellingForceAgents.getFy()/6 + repellingForceWalls.getFy();
+        double fx = (this.weight * dx / this.tau) + repellingForceAgents.getFx() + repellingForceWalls.getFx();
+        double fy = (this.weight * dy / this.tau) + repellingForceAgents.getFy() + repellingForceWalls.getFy();
 
         double ax = fx / this.weight;
         double ay = fy / this.weight;
@@ -235,7 +234,6 @@ public class Vehicle extends HasCoords{
 					fx = fx - Simulation.KAPPA * distR * this.vx * tx * tx;
 					fy = fy - Simulation.KAPPA * distR * this.vy * ty * ty;
 				}
-				
 				if (endpoint){
 					fx /= 20;
 					fy /= 20;
@@ -266,6 +264,7 @@ public class Vehicle extends HasCoords{
 	            }
 	        }
         }    
+        checkInside();
         return true;
     }
 
@@ -337,7 +336,16 @@ public class Vehicle extends HasCoords{
 		return inside;
 	}
 
-	public void setInside(boolean inside) {
-		this.inside = inside;
+	public void checkInside() {
+		
+		if (this.getX() > Simulation.trainMinX && this.getX() < Simulation.trainMaxX && 
+				this.getY() > Simulation.trainMinY && this.getX() < Simulation.trainMaxX){
+			
+			this.inside = true;
+			
+		} else {
+			this.inside =  false;
+		}
 	}
+	
 }
