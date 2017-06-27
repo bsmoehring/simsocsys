@@ -38,10 +38,10 @@ public class Simulation {
     public static final double K = 120000;
     public static final double KAPPA = 240000;
 	
-	public static final double trainMinX = 0.35;
-	public static final double trainMaxX = 11.02;
-	public static final double trainMinY = 1.00;
-	public static final double trainMaxY = 3.00;
+	public static double trainMinX;
+	public static double trainMaxX;
+	public static double trainMinY;
+	public static double trainMaxY;
 	
     private final Vis vis;
     private static List<Vehicle> vehs = new ArrayList<>();
@@ -75,12 +75,13 @@ public class Simulation {
         Wall w7 = walls.createWall(07.10, 3.30, 09.72, 3.30, false, 7);
         Wall w8 = walls.createWall(11.02, 3.30, 12.55, 3.30, false, 8);
         Wall w9 = walls.createWall(00.35, 1.00, 00.35, 3.30, false, 9);
- 
-        Wall d1 = walls.createWall(01.88, 1.00, 03.18, 1.00, true, 101);
-        Wall d2 = walls.createWall(01.88, 3.30, 03.18, 3.30, true, 102);
-        Wall d3 = walls.createWall(05.80, 1.00, 07.10, 1.00, true, 103);
-        Wall d4 = walls.createWall(05.80, 3.30, 07.10, 3.30, true, 104);
         
+        Wall d1 = walls.createWall(01.88, 1.00, 03.18, 1.00, true, 101);
+        Wall d2 = walls.createWall(01.88, 3.30, 03.18, 3.30, false, 102);
+        Wall d3 = walls.createWall(05.80, 1.00, 07.10, 1.00, true, 103);
+        Wall d4 = walls.createWall(05.80, 3.30, 07.10, 3.30, false, 104);
+        
+        walls.getBoundaries();
         
 //        Rooms rooms = new Rooms();
 //        List<Link> roomLinks = new LinkedList<Link>();
@@ -106,7 +107,8 @@ public class Simulation {
         	double yFrom = Math.random()*1.9+1.1;
         	Vehicle v = new Vehicle(xFrom, yFrom, dijkstra.findRoute(xFrom, yFrom, 7), i);
         	v.setWaiting(false);
-//        	Counts.leaving++;
+        	v.setIsInside(true);
+        	Counts.leaving++;
         	sim.add(v);
         }
         for (int i = 1 ; i <= pEnter; i++){
@@ -114,7 +116,8 @@ public class Simulation {
         	double yFrom = Math.random();
         	Vehicle v = new Vehicle(xFrom, yFrom, dijkstra.findRoute(xFrom, yFrom, 8), 1000+i);
         	v.setWaiting(true);
-//        	Counts.entering++;
+        	v.setIsInside(false);
+        	Counts.entering++;
         	sim.add(v);
         }
         
@@ -146,18 +149,17 @@ public class Simulation {
             Iterator<Vehicle> it = Simulation.vehs.iterator();
             while (it.hasNext()) {
                 Vehicle v = it.next();
-                Counts.checkEnterLeave(v);
                 if(!v.move()){
                 	it.remove();
                 }
             }
+            Counts.checkPositions(Simulation.vehs);
 
             //
             List<VehicleInfo> vInfos = new ArrayList<>();
             for (Vehicle v : Simulation.vehs) {
                 VehicleInfo vi = new VehicleInfo(v.getX(), v.getY(), v.getR(), v.getId());
                 vInfos.add(vi);
-                
             }
             this.vis.update(time, vInfos);
 

@@ -19,8 +19,6 @@
  * *********************************************************************** */
 
 
-import java.text.DecimalFormat;
-import java.util.ArrayList;
 import java.util.List;
 
 import processing.core.PVector;
@@ -40,7 +38,7 @@ public class Vehicle extends HasCoords{
     private double tau = 0.5;
     private double weight = 80.0;
     private boolean waiting = false;
-    private boolean inside;
+    private boolean isInside;
 
 	//    abstoﬂende Kr‰fte
     private double r = 0.3;
@@ -226,7 +224,7 @@ public class Vehicle extends HasCoords{
 				if (distance <= this.r) {
 					double tx = -dy;
 					double ty = dx; 
-					ff.add((float)(- Simulation.KAPPA * distR * this.vx * tx * tx),
+					ff.add((float)(- Simulation.KAPPA * distR * this.vx * tx * tx ),
 							(float)(- Simulation.KAPPA * distR * this.vy * ty * ty), 0);
 				}
 				if (endpoint){
@@ -260,7 +258,6 @@ public class Vehicle extends HasCoords{
 	            }
 	        }
         }    
-        checkInside();
         return true;
     }
 
@@ -329,19 +326,11 @@ public class Vehicle extends HasCoords{
 	}
 
 	public boolean isInside() {
-		return inside;
+		return isInside;
 	}
-
-	public void checkInside() {
-		
-		if (this.getX() > Simulation.trainMinX && this.getX() < Simulation.trainMaxX && 
-				this.getY() > Simulation.trainMinY && this.getX() < Simulation.trainMaxX){
-			
-			this.inside = true;
-			
-		} else {
-			this.inside =  false;
-		}
+	
+	public void setIsInside(boolean isInside){
+		this.isInside = isInside;
 	}
 	
 }
