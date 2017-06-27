@@ -89,14 +89,11 @@ public class Vehicle extends HasCoords{
 	        dy -= vy;
     	}
         
-        Force repellingForceAgents = new Force();
-        repellingForceAgents = repellingForceAgents(vehs);
+        PVector repellingForceAgents = repellingForceAgents(vehs);
+        PVector repellingForceWalls = repellingForceWalls();
         
-        Force repellingForceWalls = new Force();
-        repellingForceWalls = repellingForceWalls();
-        
-        double fx = (this.weight * dx / this.tau) + repellingForceAgents.getFx() + repellingForceWalls.getFx();
-        double fy = (this.weight * dy / this.tau) + repellingForceAgents.getFy() + repellingForceWalls.getFy();
+        double fx = (this.weight * dx / this.tau) + repellingForceAgents.x + repellingForceWalls.x;
+        double fy = (this.weight * dy / this.tau) + repellingForceAgents.y + repellingForceWalls.y;
 
         double ax = fx / this.weight;
         double ay = fy / this.weight;
@@ -116,9 +113,7 @@ public class Vehicle extends HasCoords{
 
     }
     
-    public Force repellingForceAgents(List<Vehicle> vehs){
-    	
-    	Force force = new Force();
+    public PVector repellingForceAgents(List<Vehicle> vehs){
     	
     	double fx = 0;
     	double fy = 0;
@@ -163,8 +158,7 @@ public class Vehicle extends HasCoords{
     		
     	}
     	
-    	force.setFx(fx);
-    	force.setFy(fy);
+    	PVector force = new PVector((float)(fx), (float)(fy));
     	
     	return force;
     	
@@ -181,9 +175,9 @@ public class Vehicle extends HasCoords{
     	
     }
     
-    public Force repellingForceWalls(){
+    public PVector repellingForceWalls(){
     	
-    	Force force 	= new Force(0, 0);
+    	PVector force 	= new PVector(0, 0);
     	
     	PVector veh 	= new PVector((float)this.x, (float) this.y);
     	
@@ -225,22 +219,24 @@ public class Vehicle extends HasCoords{
 				if (distance <= this.r) {
 					f = f + (Simulation.K * distR);
 				}
-	
-				double fx = f * (dx);
-				double fy = f * (dy);
+				
+				PVector ff = new PVector((float)(f * dx), (float)(f * dy));
+//				double fx = f * (dx);
+//				double fy = f * (dy);
 				if (distance <= this.r) {
 					double tx = -dy;
 					double ty = dx; 
-					fx = fx - Simulation.KAPPA * distR * this.vx * tx * tx;
-					fy = fy - Simulation.KAPPA * distR * this.vy * ty * ty;
+					ff.add((float)(- Simulation.KAPPA * distR * this.vx * tx * tx),
+							(float)(- Simulation.KAPPA * distR * this.vy * ty * ty), 0);
 				}
 				if (endpoint){
-					fx /= 20;
-					fy /= 20;
+					ff.div(20);
 				}
 				
-				force.setFx(force.getFx()+fx);
-				force.setFy(force.getFy()+fy);
+				force.add(ff);
+				
+//				force.setFx(force.getFx()+fx);
+//				force.setFy(force.getFy()+fy);
     		}
     	}	    	
     	

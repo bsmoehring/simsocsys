@@ -1,13 +1,14 @@
 
 public class Counts {
 	
-	public static int entering;
-	public static int leaving;
+	private static int entering;
+	private static int leaving;
 	
-	public static double doorsOpen;
-	public static double allPLeft;
-	public static double allPEntered;
-	public static double doorsClosed;
+	private static double doorsOpeningTime;
+	private static double doorsClosingTime;
+	private static double allPLeft;
+	private static double allPEntered;
+
 	
 	public int getEntering() {
 		return entering;
@@ -20,6 +21,19 @@ public class Counts {
 	}
 	public void setLeaving(int leaving) {
 		Counts.leaving = leaving;
+	}
+	
+	public static void setDoorsOpeningTime(double time){
+		doorsOpeningTime = time;
+	}
+	
+	public static void setDoorsClosingTime(double time){
+		doorsClosingTime = time;
+	}
+	public static void checkEnterLeave(Vehicle v) {
+		
+//		if(v.getX())
+		
 	}
 
 }

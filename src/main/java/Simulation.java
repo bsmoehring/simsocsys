@@ -106,7 +106,7 @@ public class Simulation {
         	double yFrom = Math.random()*1.9+1.1;
         	Vehicle v = new Vehicle(xFrom, yFrom, dijkstra.findRoute(xFrom, yFrom, 7), i);
         	v.setWaiting(false);
-        	Counts.leaving++;
+//        	Counts.leaving++;
         	sim.add(v);
         }
         for (int i = 1 ; i <= pEnter; i++){
@@ -114,7 +114,7 @@ public class Simulation {
         	double yFrom = Math.random();
         	Vehicle v = new Vehicle(xFrom, yFrom, dijkstra.findRoute(xFrom, yFrom, 8), 1000+i);
         	v.setWaiting(true);
-        	Counts.entering++;
+//        	Counts.entering++;
         	sim.add(v);
         }
         
@@ -123,9 +123,10 @@ public class Simulation {
     }
 
     private void run() {
-        double time = 0;
-
+    	
+    	double time = 0;
         double maxTime = 1000;
+        
         while (time < maxTime) {
         	
         	if (time > 10 && !doorsOpen) {
@@ -135,7 +136,7 @@ public class Simulation {
         			}
     			}
     			this.doorsOpen = true;
-    			Counts.doorsOpen = time;
+    			Counts.setDoorsOpeningTime(time);
     			System.out.println("doors open at: " + time);
         	} 	        	
         	
@@ -145,6 +146,7 @@ public class Simulation {
             Iterator<Vehicle> it = Simulation.vehs.iterator();
             while (it.hasNext()) {
                 Vehicle v = it.next();
+                Counts.checkEnterLeave(v);
                 if(!v.move()){
                 	it.remove();
                 }
