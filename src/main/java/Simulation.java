@@ -103,8 +103,8 @@ public class Simulation {
 //        List<Link> route4 = dijkstra.findRoute(03.18, 02.15, net.getNodes().get(7));
 
         for (int i = 1 ; i <= pLeave; i++){
-        	double xFrom = Math.random()*maxX+minX;
-        	double yFrom = Math.random()*1.9+1.1;
+        	double xFrom = Math.random()*(0.9*Simulation.trainMaxX-Simulation.trainMinX)+1.1*Simulation.trainMinX;
+        	double yFrom = Math.random()*(0.9*Simulation.trainMaxY-Simulation.trainMinY)+1.1*Simulation.trainMinY;
         	Vehicle v = new Vehicle(xFrom, yFrom, dijkstra.findRoute(xFrom, yFrom, 7), i);
         	v.setWaiting(false);
         	v.setIsInside(true);
@@ -112,8 +112,8 @@ public class Simulation {
         	sim.add(v);
         }
         for (int i = 1 ; i <= pEnter; i++){
-        	double xFrom = Math.random()*maxX+minX;
-        	double yFrom = Math.random();
+        	double xFrom = Math.random()*(0.9*Simulation.trainMaxX-Simulation.trainMinX)+1.1*Simulation.trainMinX;
+        	double yFrom = Math.random()*(0.9*Simulation.trainMinY);
         	Vehicle v = new Vehicle(xFrom, yFrom, dijkstra.findRoute(xFrom, yFrom, 8), 1000+i);
         	v.setWaiting(true);
         	v.setIsInside(false);

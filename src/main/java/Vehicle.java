@@ -71,6 +71,9 @@ public class Vehicle extends HasCoords{
     	if (route != null){
 	    	
 	    	Link currentLink;
+//	    	System.out.println(this.id);
+//	    	System.out.println(this.x + " " + this.y);
+//	    	System.out.println(this.route.size() + this.route.toString());
 	    	currentLink = route.get(this.routeIndex);
 	
 	        dx = currentLink.getTo().getX() - this.x;
