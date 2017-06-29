@@ -48,6 +48,10 @@ public class Node extends HasCoords{
    	public void addInLink(Link l) {
    		this.inLinks.add(l);
    	}
+   	
+   	public List<Link> getInLinks(){
+   		return inLinks;
+   	}
 
    	public double getX() {
    		return this.x;

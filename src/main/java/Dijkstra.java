@@ -17,6 +17,14 @@ public class Dijkstra {
 		Node start = getClosestNode(xFrom, yFrom);
 		Node destination = Simulation.net.getNodes().get(dest);
 		
+		List<Link> route = new ArrayList<>();
+		
+		if (start==destination){
+			
+			route.add(destination.getInLinks().get(0));
+			return route;
+		}
+		
 //		create Maps for costs and predecessor. add all nodes with maximum costs but without predecessors. start node with costs 0.
 		List<NodeInfo> nodeInfos = new LinkedList<NodeInfo>();
 		for (Entry<Integer, Node> entry : Simulation.net.getNodes().entrySet()){
@@ -49,7 +57,6 @@ public class Dijkstra {
 		}
 		predecessors.add(start);
 		
-		List<Link> route = new ArrayList<>();
 		Node nodeFrom = predecessors.get(predecessors.size()-1);
 		while (nodeFrom != destination){
 			route.add(nodeFrom.getLinkToNode(predecessors.get(predecessors.size()-2)));
