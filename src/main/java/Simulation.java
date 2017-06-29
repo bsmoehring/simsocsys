@@ -80,6 +80,8 @@ public class Simulation {
         Wall d2 = walls.createWall(01.88, 3.30, 03.18, 3.30, false, 102);
         Wall d3 = walls.createWall(05.80, 1.00, 07.10, 1.00, true, 103);
         Wall d4 = walls.createWall(05.80, 3.30, 07.10, 3.30, false, 104);
+        Wall d5 = walls.createWall(09.72, 1.00, 11.02, 1.00, true, 105);
+        Wall d6 = walls.createWall(09.72, 3.30, 11.02, 3.30, false, 106);
         
         walls.getBoundaries();
         
@@ -108,6 +110,7 @@ public class Simulation {
         	Vehicle v = new Vehicle(xFrom, yFrom, dijkstra.findRoute(xFrom, yFrom, 7), i);
         	v.setWaiting(false);
         	v.setIsInside(true);
+        	v.setLeaving(true);
         	Counts.leaving++;
         	sim.add(v);
         }
@@ -117,6 +120,7 @@ public class Simulation {
         	Vehicle v = new Vehicle(xFrom, yFrom, dijkstra.findRoute(xFrom, yFrom, 8), 1000+i);
         	v.setWaiting(true);
         	v.setIsInside(false);
+        	v.setLeaving(false);
         	Counts.entering++;
         	sim.add(v);
         }
@@ -153,7 +157,7 @@ public class Simulation {
                 	it.remove();
                 }
             }
-            Counts.checkPositions(Simulation.vehs);
+            Counts.checkPositions(Simulation.vehs, time);
 
             //
             List<VehicleInfo> vInfos = new ArrayList<>();

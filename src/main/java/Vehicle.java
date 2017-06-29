@@ -39,6 +39,7 @@ public class Vehicle extends HasCoords{
     private double weight = 80.0;
     private boolean waiting = false;
     private boolean isInside;
+    private boolean leaving;
 
 	//    abstoﬂende Kr‰fte
     private double r = 0.3;
@@ -71,9 +72,6 @@ public class Vehicle extends HasCoords{
     	if (route != null){
 	    	
 	    	Link currentLink;
-//	    	System.out.println(this.id);
-//	    	System.out.println(this.x + " " + this.y);
-//	    	System.out.println(this.route.size() + this.route.toString());
 	    	currentLink = route.get(this.routeIndex);
 	
 	        dx = currentLink.getTo().getX() - this.x;
@@ -334,6 +332,14 @@ public class Vehicle extends HasCoords{
 	
 	public void setIsInside(boolean isInside){
 		this.isInside = isInside;
+	}
+
+	public boolean isLeaving() {
+		return leaving;
+	}
+
+	public void setLeaving(boolean leaving) {
+		this.leaving = leaving;
 	}
 	
 }

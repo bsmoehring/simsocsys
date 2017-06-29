@@ -9,8 +9,8 @@ public class Counts {
 	
 	private static double doorsOpeningTime;
 	private static double doorsClosingTime;
-	private static double allPLeft;
-	private static double allPEntered;
+	private static double pLeft;
+	private static double pEntered;
 
 	
 	public int getEntering() {
@@ -33,7 +33,7 @@ public class Counts {
 	public static void setDoorsClosingTime(double time){
 		doorsClosingTime = time;
 	}
-	public static void checkPositions(List<Vehicle> vehs) {
+	public static void checkPositions(List<Vehicle> vehs, double time) {
 		
 		for (Vehicle v : vehs){
 			boolean isInside = checkInside(v);
@@ -44,19 +44,20 @@ public class Counts {
 			} else if (isInside && !wasInside){
 				// vehicle is inside but was outside -> entered
 				v.setIsInside(true);
-				Counts.allPEntered ++;
-				System.out.println(v.getId() + " entered.");
+				Counts.pEntered ++;
+				System.out.println(time + " " + v.getId() + " entered.");
 			} else if (!isInside && wasInside){
 				// vehicle is outside but was inside -> left
 				v.setIsInside(false);
-				Counts.allPLeft++;
-				System.out.println(v.getId() + " left.");
+				Counts.pLeft++;
+				System.out.println(time + " " + v.getId() + " left.");
 			}
 		}
-		if (Counts.allPLeft >= Counts.leaving){
+		if (Counts.pLeft >= Counts.leaving){
 			for (Vehicle v : vehs){
 				v.setWaiting(false);
 			}
+			
 		}
 	}
 	
