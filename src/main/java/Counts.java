@@ -53,12 +53,12 @@ public class Counts {
 				System.out.println(time + " " + v.getId() + " left.");
 			}
 		}
-		if (Counts.pLeft >= Counts.leaving){
-			for (Vehicle v : vehs){
-				v.setWaiting(false);
-			}
-			
-		}
+//		if (Counts.pLeft >= Counts.leaving){
+//			for (Vehicle v : vehs){
+//				v.setWaiting(false);
+//			}
+//			
+//		}
 	}
 	
 	public static boolean checkInside(Vehicle v) {

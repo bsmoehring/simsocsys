@@ -25,6 +25,8 @@ public class Network {
         Node n8 = createNode(01.00, 02.15, 8);
         Node n9 = createNode(04.06, 02.15, 9);
         
+        Node n10 = createNode(4.50, -9.00, 10);
+        
         Node n11 = createNode(06.45, 01.00, 11);
         Node n12 = createNode(06.45, 01.50, 12);
         Node n13 = createNode(05.80, 02.15, 13);
@@ -85,6 +87,10 @@ public class Network {
         Link l191_rev	= createLink(n19 ,n16, 18, 1);
 //        Link l192 		= createLink(n19, n28, 17, 1);
 //        Link l192_rev	= createLink(n28 ,n19, 18, 1);
+        Link l100 		= createLink(n7, n10, 100, 1);
+        Link l100_rev 	= createLink(n10 ,n7, 1001, 1);
+        Link l101 		= createLink(n10, n17, 101, 1);
+        Link l101_rev	= createLink(n17 ,n10, 1011, 1);
 	}
 	
    	public Map<Integer, Link> getLinks() {

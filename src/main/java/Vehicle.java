@@ -37,7 +37,6 @@ public class Vehicle extends HasCoords{
     private double maxSpeed = 2.0;
     private double tau = 0.5;
     private double weight = 80.0;
-    private boolean waiting = false;
     private boolean isInside;
     private boolean leaving;
 
@@ -47,7 +46,9 @@ public class Vehicle extends HasCoords{
 	private double x;
     private double y;
     private double phi = 0;//radian!!
-
+    
+    private double viewX;
+    private double viewY ;
 
     private int routeIndex = 0;
 
@@ -63,11 +64,11 @@ public class Vehicle extends HasCoords{
     	double dx = 0;
     	double dy = 0;
     	
-    	if (this.waiting){
-    		this.speed = 0.1;
-    	} else {
-    		this.speed = 1.34;
-    	}
+//    	if (this.waiting){
+//    		this.speed = 0.1;
+//    	} else {
+//    		this.speed = 1.34;
+//    	}
     	
     	if (route != null){
 	    	
@@ -80,6 +81,12 @@ public class Vehicle extends HasCoords{
 	        double dist = Math.sqrt(dx*dx+dy*dy);
 	        dx /= dist;
 	        dy /= dist;
+	        
+	        if (this.leaving || freePath(vehs, dx, dy)){
+	        	this.speed = 1.34;
+	        } else {
+	        	this.speed = 0.1;
+	        }
 	        
 	        dx *= this.speed;
 	        dy *= this.speed;
@@ -94,11 +101,11 @@ public class Vehicle extends HasCoords{
         double fx = (this.weight * dx / this.tau) + repellingForceAgents.x + repellingForceWalls.x;
         double fy = (this.weight * dy / this.tau) + repellingForceAgents.y + repellingForceWalls.y;
 
-        double ax = fx / this.weight;
-        double ay = fy / this.weight;
+        fx /= this.weight;
+        fy /= this.weight;
         
-        this.vx += ax * Simulation.H;
-        this.vy += ay * Simulation.H;
+        this.vx += fx * Simulation.H;
+        this.vy += fy * Simulation.H;
 
         //TODO: geschwindigkeit limitieren
     	double s = Math.sqrt(this.vx*this.vx+this.vy*this.vy);
@@ -112,7 +119,25 @@ public class Vehicle extends HasCoords{
 
     }
     
-    public PVector repellingForceAgents(List<Vehicle> vehs){
+    private boolean freePath(List<Vehicle> vehs, double dx, double dy) {
+		
+    	dx += this.x;
+    	dy += this.y;
+    	
+    	HasCoords p = new HasCoords();
+    	p.setX(dx);
+    	p.setY(dy);
+    	
+    	for (Vehicle v : vehs){
+    		if(v.leaving && pointDistance(v ,p)<2*v.getR()){
+    			return false;
+    		}
+    	}
+    	
+		return true;
+	}
+
+	public PVector repellingForceAgents(List<Vehicle> vehs){
     	
     	double fx = 0;
     	double fy = 0;
@@ -121,7 +146,7 @@ public class Vehicle extends HasCoords{
     		
     		if ( veh != this){
     			    			
-    			double dist =  pointDistance(veh);
+    			double dist =  pointDistance(veh, this);
     			double distR = (this.r + veh.r - dist);
     			
     			double f = Simulation.A * Math.pow(Math.E, (distR/Simulation.B));
@@ -163,10 +188,10 @@ public class Vehicle extends HasCoords{
     	
     }
     
-    public double pointDistance(HasCoords v1){
+    public double pointDistance(HasCoords v1, HasCoords v2){
     	
-        double dx = v1.getX() - this.x;
-        double dy = v1.getY() - this.y;
+        double dx = v1.getX() - v2.getX();
+        double dy = v1.getY() - v2.getY();
 
         double dist = Math.sqrt(dx*dx+dy*dy);
     	
@@ -251,7 +276,7 @@ public class Vehicle extends HasCoords{
 	        
 	        if (currentLink.hasVehicleReachedEndOfLink(this) 
 	        		//possible way to ease destination mistakes by focusing on a node in a wrong direction
-	        		|| pointDistance(this.route.get(this.routeIndex).getTo()) < this.r
+	        		|| pointDistance(this.route.get(this.routeIndex).getTo(), this) < this.r
 	        		) {
 	            this.routeIndex++;
 	            if (this.routeIndex == this.route.size() ){
@@ -293,11 +318,6 @@ public class Vehicle extends HasCoords{
 	public int getId() {
 		return id;
 	}
-
-	public boolean isWaiting() {
-		
-		return this.waiting;
-	}
     
     public double getR() {
 		return r;
@@ -315,9 +335,6 @@ public class Vehicle extends HasCoords{
 		this.speed = speed;
 	}
 
-	public void setWaiting(boolean waiting) {
-		this.waiting = waiting;
-	}
 	public boolean hasRoute(){
 		if(this.route != null){
 			return true;
@@ -340,6 +357,22 @@ public class Vehicle extends HasCoords{
 
 	public void setLeaving(boolean leaving) {
 		this.leaving = leaving;
+	}
+
+	public double getViewX() {
+		return viewX;
+	}
+
+	public void setViewX(double viewX) {
+		this.viewX = viewX;
+	}
+
+	public double getViewY() {
+		return viewY;
+	}
+
+	public void setViewY(double viewY) {
+		this.viewY = viewY;
 	}
 	
 }

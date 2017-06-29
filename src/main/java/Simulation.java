@@ -58,10 +58,8 @@ public class Simulation {
 
     public static void main(String[] args) {
     	
-    	int pLeave = 5;
-    	int pEnter = 5;
-    	double minX = 0.4;
-    	double maxX = 5.5;
+    	int pLeave = 1;
+    	int pEnter = 1;
 
         Network net = new Network();
         
@@ -101,14 +99,13 @@ public class Simulation {
         
         Dijkstra dijkstra = new Dijkstra();
         Simulation sim = new Simulation(net, walls);
-//        List<Link> route3 = dijkstra.findRoute(02.53, 01.50, net.getNodes().get(7)); 
-//        List<Link> route4 = dijkstra.findRoute(03.18, 02.15, net.getNodes().get(7));
 
         for (int i = 1 ; i <= pLeave; i++){
         	double xFrom = Math.random()*(0.9*Simulation.trainMaxX-Simulation.trainMinX)+1.1*Simulation.trainMinX;
         	double yFrom = Math.random()*(0.9*Simulation.trainMaxY-Simulation.trainMinY)+1.1*Simulation.trainMinY;
+//        	xFrom = 2;
+//        	yFrom = 2.5;
         	Vehicle v = new Vehicle(xFrom, yFrom, dijkstra.findRoute(xFrom, yFrom, 7), i);
-        	v.setWaiting(false);
         	v.setIsInside(true);
         	v.setLeaving(true);
         	Counts.leaving++;
@@ -117,8 +114,9 @@ public class Simulation {
         for (int i = 1 ; i <= pEnter; i++){
         	double xFrom = Math.random()*(0.9*Simulation.trainMaxX-Simulation.trainMinX)+1.1*Simulation.trainMinX;
         	double yFrom = Math.random()*(0.9*Simulation.trainMinY);
+//        	xFrom = 2;
+//        	yFrom = 0.5;
         	Vehicle v = new Vehicle(xFrom, yFrom, dijkstra.findRoute(xFrom, yFrom, 8), 1000+i);
-        	v.setWaiting(true);
         	v.setIsInside(false);
         	v.setLeaving(false);
         	Counts.entering++;
@@ -157,6 +155,7 @@ public class Simulation {
                 	it.remove();
                 }
             }
+            
             Counts.checkPositions(Simulation.vehs, time);
 
             //
