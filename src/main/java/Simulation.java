@@ -58,8 +58,8 @@ public class Simulation {
 
     public static void main(String[] args) {
     	
-    	int pLeave = 1;
-    	int pEnter = 1;
+    	int pLeave = 10;
+    	int pEnter = 10;
 
         Network net = new Network();
         
@@ -103,8 +103,6 @@ public class Simulation {
         for (int i = 1 ; i <= pLeave; i++){
         	double xFrom = Math.random()*(0.9*Simulation.trainMaxX-Simulation.trainMinX)+1.1*Simulation.trainMinX;
         	double yFrom = Math.random()*(0.9*Simulation.trainMaxY-Simulation.trainMinY)+1.1*Simulation.trainMinY;
-//        	xFrom = 2;
-//        	yFrom = 2.5;
         	Vehicle v = new Vehicle(xFrom, yFrom, dijkstra.findRoute(xFrom, yFrom, 7), i);
         	v.setIsInside(true);
         	v.setLeaving(true);
@@ -114,8 +112,6 @@ public class Simulation {
         for (int i = 1 ; i <= pEnter; i++){
         	double xFrom = Math.random()*(0.9*Simulation.trainMaxX-Simulation.trainMinX)+1.1*Simulation.trainMinX;
         	double yFrom = Math.random()*(0.9*Simulation.trainMinY);
-//        	xFrom = 2;
-//        	yFrom = 0.5;
         	Vehicle v = new Vehicle(xFrom, yFrom, dijkstra.findRoute(xFrom, yFrom, 8), 1000+i);
         	v.setIsInside(false);
         	v.setLeaving(false);
@@ -161,7 +157,7 @@ public class Simulation {
             //
             List<VehicleInfo> vInfos = new ArrayList<>();
             for (Vehicle v : Simulation.vehs) {
-                VehicleInfo vi = new VehicleInfo(v.getX(), v.getY(), v.getR(), v.getId());
+                VehicleInfo vi = new VehicleInfo(v.getX(), v.getY(), v.getR(), v.getId(), v.getViewX(), v.getViewY());
                 vInfos.add(vi);
             }
             this.vis.update(time, vInfos);

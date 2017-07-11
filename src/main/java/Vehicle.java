@@ -74,7 +74,7 @@ public class Vehicle extends HasCoords{
 	    	
 	    	Link currentLink;
 	    	currentLink = route.get(this.routeIndex);
-	
+	    	
 	        dx = currentLink.getTo().getX() - this.x;
 	        dy = currentLink.getTo().getY() - this.y;
 	
@@ -121,16 +121,19 @@ public class Vehicle extends HasCoords{
     
     private boolean freePath(List<Vehicle> vehs, double dx, double dy) {
 		
-    	dx += this.x;
-    	dy += this.y;
-    	
     	HasCoords p = new HasCoords();
-    	p.setX(dx);
-    	p.setY(dy);
+    	p.setX(dx*this.r + this.x);
+    	p.setY(dy*this.r + this.y);
+    	
+    	this.viewX = p.getX();
+    	this.viewY = p.getY();
     	
     	for (Vehicle v : vehs){
-    		if(v.leaving && pointDistance(v ,p)<2*v.getR()){
+    		if(v.leaving && pointDistance(v ,p)<(v.getR()+this.r)*2){
+    			
+    			System.out.println(v.getId() + " is in the way of " + this.getId());
     			return false;
+    			
     		}
     	}
     	
@@ -274,9 +277,11 @@ public class Vehicle extends HasCoords{
         if (this.route != null){
 	        Link currentLink = this.route.get(this.routeIndex);
 	        
-	        if (currentLink.hasVehicleReachedEndOfLink(this) 
-	        		//possible way to ease destination mistakes by focusing on a node in a wrong direction
-	        		|| pointDistance(this.route.get(this.routeIndex).getTo(), this) < this.r
+	        if (
+	        		currentLink.hasVehicleReachedEndOfLink(this) 
+//	        		possible way to ease destination mistakes by focusing on a node in a wrong direction
+	        		|| 
+	        		pointDistance(this.route.get(this.routeIndex).getTo(), this) < this.r*2
 	        		) {
 	            this.routeIndex++;
 	            if (this.routeIndex == this.route.size() ){
