@@ -35,15 +35,17 @@ public class VehicleInfo {
     private final int y;    
 
     private final int viewX;
-    private final int viewY;    	
+    private final int viewY;  
+    private final int viewR;
     
     private final int r;
 
-    public VehicleInfo(double x, double y, double r, int id, double viewX, double viewY) {
+    public VehicleInfo(double x, double y, double r, int id, double viewX, double viewY, double viewR) {
         this.x = (int) (Simulation.SCALE * x);
         this.y = (int) (Simulation.SCALE * y);
         this.viewX = (int) (Simulation.SCALE * viewX);
         this.viewY = (int) (Simulation.SCALE * viewY);
+        this.viewR = (int) (Simulation.SCALE * viewR);
         
         this.id = id;
 
@@ -52,15 +54,15 @@ public class VehicleInfo {
 
     public void draw(PApplet p) {
         p.pushMatrix();
-
-        p.translate(x, y);
-        p.fill(0, 0, 255);
-        p.ellipse(0, 0, this.r, this.r);
-        p.popMatrix();
         
         p.pushMatrix();
         p.translate(viewX, viewY);
         p.fill(255, 255, 255);
+        p.ellipse(0, 0, this.viewR, this.viewR);
+        p.popMatrix();
+        
+        p.translate(x, y);
+        p.fill(0, 0, 255);
         p.ellipse(0, 0, this.r, this.r);
         p.popMatrix();
 

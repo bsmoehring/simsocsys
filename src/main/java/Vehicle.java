@@ -37,8 +37,9 @@ public class Vehicle extends HasCoords{
     private double maxSpeed = 2.0;
     private double tau = 0.5;
     private double weight = 80.0;
-    private boolean isInside;
+    private boolean inside;
     private boolean leaving;
+    private boolean waiting = false;
 
 	//    abstoﬂende Kr‰fte
     private double r = 0.3;
@@ -49,6 +50,7 @@ public class Vehicle extends HasCoords{
     
     private double viewX;
     private double viewY ;
+	private double viewR;
 
     private int routeIndex = 0;
 
@@ -82,11 +84,7 @@ public class Vehicle extends HasCoords{
 	        dx /= dist;
 	        dy /= dist;
 	        
-	        if (this.leaving || freePath(vehs, dx, dy)){
-	        	this.speed = 1.34;
-	        } else {
-	        	this.speed = 0.1;
-	        }
+	        checkFreePath(vehs, dx, dy);
 	        
 	        dx *= this.speed;
 	        dy *= this.speed;
@@ -114,30 +112,38 @@ public class Vehicle extends HasCoords{
     		this.vx = (this.vx/v)*this.maxSpeed;
     		this.vy = (this.vy/v)*this.maxSpeed;
     	}
-    
         this.phi = Math.atan2(this.vy,this.vx);
-
     }
     
-    private boolean freePath(List<Vehicle> vehs, double dx, double dy) {
+    private void checkFreePath(List<Vehicle> vehs, double dx, double dy) {
 		
     	HasCoords p = new HasCoords();
     	p.setX(dx*this.r + this.x);
     	p.setY(dy*this.r + this.y);
     	
-    	this.viewX = p.getX();
-    	this.viewY = p.getY();
-    	
-    	for (Vehicle v : vehs){
-    		if(v.leaving && pointDistance(v ,p)<(v.getR()+this.r)*2){
-    			
-    			System.out.println(v.getId() + " is in the way of " + this.getId());
-    			return false;
-    			
-    		}
+    	if(!this.isLeaving()){
+        	this.viewX = p.getX();
+        	this.viewY = p.getY();
+        	this.viewR = this.r*3;
+	    	for (Vehicle v : vehs){
+	    		if((pointDistance(v ,p)<this.viewR && v.leaving)){	
+	    			System.out.println(v.getId() + " is in the way of " + this.getId());
+	    			this.setWaiting(true);
+	    			this.speed = 0.1;
+	    		} else {
+	    			this.setWaiting(false);
+	    			this.speed = 1.34;
+	    		}
+	    		if (pointDistance(v ,p)<this.viewR && v.isWaiting()){
+	    			System.out.println(v.getId() + " is waiting in front of " + this.getId());
+	    			this.setWaiting(true);
+	    			this.speed = 0.1;
+	    		} else {
+	    			this.setWaiting(false);
+	    			this.speed = 1.34;
+	    		}
+	    	}
     	}
-    	
-		return true;
 	}
 
 	public PVector repellingForceAgents(List<Vehicle> vehs){
@@ -293,7 +299,7 @@ public class Vehicle extends HasCoords{
     }
 
     public double getX() {
-        return x;
+        return this.x;
     }
     
     public void setX(double x){
@@ -305,27 +311,27 @@ public class Vehicle extends HasCoords{
     }
 
     public double getY() {
-        return y;
+        return this.y;
     }
     
     public double getVX() {
-        return vx;
+        return this.vx;
     }
 
     public double getVY() {
-        return vy;
+        return this.vy;
     }
 
     public double getPhi() {
-        return phi;
+        return this.phi;
     }
 
 	public int getId() {
-		return id;
+		return this.id;
 	}
     
     public double getR() {
-		return r;
+		return this.r;
 	}
 
 	public void setR(double r) {
@@ -333,7 +339,7 @@ public class Vehicle extends HasCoords{
 	}
 
 	public double getSpeed() {
-		return speed;
+		return this.speed;
 	}
 
 	public void setSpeed(double speed) {
@@ -349,15 +355,15 @@ public class Vehicle extends HasCoords{
 	}
 
 	public boolean isInside() {
-		return isInside;
+		return this.inside;
 	}
 	
 	public void setIsInside(boolean isInside){
-		this.isInside = isInside;
+		this.inside = isInside;
 	}
 
 	public boolean isLeaving() {
-		return leaving;
+		return this.leaving;
 	}
 
 	public void setLeaving(boolean leaving) {
@@ -365,7 +371,7 @@ public class Vehicle extends HasCoords{
 	}
 
 	public double getViewX() {
-		return viewX;
+		return this.viewX;
 	}
 
 	public void setViewX(double viewX) {
@@ -373,11 +379,23 @@ public class Vehicle extends HasCoords{
 	}
 
 	public double getViewY() {
-		return viewY;
+		return this.viewY;
 	}
 
 	public void setViewY(double viewY) {
 		this.viewY = viewY;
+	}
+
+	public double getViewR() {
+		return this.viewR;
+	}
+
+	public boolean isWaiting() {
+		return this.waiting;
+	}
+
+	public void setWaiting(boolean freepath) {
+		this.waiting = freepath;
 	}
 	
 }

@@ -19,6 +19,10 @@
  * *********************************************************************** */
 
 
+import java.awt.event.WindowEvent;
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -28,7 +32,8 @@ import java.util.List;
  * Created by laemmel on 24/04/16.
  */
 public class Simulation {
-
+	private static final String FILENAME = "D:/Dropbox/SimSozSys/output/output1.csv";
+	
     public static final double SCALE = 100;
 
     public static final double H = 0.01;
@@ -43,7 +48,7 @@ public class Simulation {
 	public static double trainMinY;
 	public static double trainMaxY;
 	
-    private final Vis vis;
+//    private final Vis vis;
     private static List<Vehicle> vehs = new ArrayList<>();
     public static Network net;
     public static Walls walls;
@@ -52,36 +57,13 @@ public class Simulation {
     public Simulation(Network net, Walls walls) {
     	Simulation.walls = walls;
         Simulation.net = net;
-    	this.vis = new Vis(net, walls);
+//    	this.vis = new Vis(net, walls);
         
     }
 
-    public static void main(String[] args) {
-    	
-    	int pLeave = 10;
-    	int pEnter = 10;
+    public static void main(String[] args) throws IOException {
 
         Network net = new Network();
-        
-        Walls walls = new Walls();
-        Wall w1 = walls.createWall(00.35, 1.00, 01.88, 1.00, false, 1); 
-        Wall w2 = walls.createWall(03.18, 1.00, 05.80, 1.00, false, 2);
-        Wall w3 = walls.createWall(07.10, 1.00, 09.72, 1.00, false, 3);
-        Wall w4 = walls.createWall(11.02, 1.00, 12.55, 1.00, false, 4);
-        Wall w5 = walls.createWall(00.35, 3.30, 01.88, 3.30, false, 5);
-        Wall w6 = walls.createWall(03.18, 3.30, 05.80, 3.30, false, 6);
-        Wall w7 = walls.createWall(07.10, 3.30, 09.72, 3.30, false, 7);
-        Wall w8 = walls.createWall(11.02, 3.30, 12.55, 3.30, false, 8);
-        Wall w9 = walls.createWall(00.35, 1.00, 00.35, 3.30, false, 9);
-        
-        Wall d1 = walls.createWall(01.88, 1.00, 03.18, 1.00, true, 101);
-        Wall d2 = walls.createWall(01.88, 3.30, 03.18, 3.30, false, 102);
-        Wall d3 = walls.createWall(05.80, 1.00, 07.10, 1.00, true, 103);
-        Wall d4 = walls.createWall(05.80, 3.30, 07.10, 3.30, false, 104);
-        Wall d5 = walls.createWall(09.72, 1.00, 11.02, 1.00, true, 105);
-        Wall d6 = walls.createWall(09.72, 3.30, 11.02, 3.30, false, 106);
-        
-        walls.getBoundaries();
         
 //        Rooms rooms = new Rooms();
 //        List<Link> roomLinks = new LinkedList<Link>();
@@ -95,72 +77,109 @@ public class Simulation {
 //        }
 //        Room room = new Room(1, roomLinks, roomWalls);
 //	    rooms.addRoom(room);
-       
         
-        Dijkstra dijkstra = new Dijkstra();
-        Simulation sim = new Simulation(net, walls);
-
-        for (int i = 1 ; i <= pLeave; i++){
-        	double xFrom = Math.random()*(0.9*Simulation.trainMaxX-Simulation.trainMinX)+1.1*Simulation.trainMinX;
-        	double yFrom = Math.random()*(0.9*Simulation.trainMaxY-Simulation.trainMinY)+1.1*Simulation.trainMinY;
-        	Vehicle v = new Vehicle(xFrom, yFrom, dijkstra.findRoute(xFrom, yFrom, 7), i);
-        	v.setIsInside(true);
-        	v.setLeaving(true);
-        	Counts.leaving++;
-        	sim.add(v);
-        }
-        for (int i = 1 ; i <= pEnter; i++){
-        	double xFrom = Math.random()*(0.9*Simulation.trainMaxX-Simulation.trainMinX)+1.1*Simulation.trainMinX;
-        	double yFrom = Math.random()*(0.9*Simulation.trainMinY);
-        	Vehicle v = new Vehicle(xFrom, yFrom, dijkstra.findRoute(xFrom, yFrom, 8), 1000+i);
-        	v.setIsInside(false);
-        	v.setLeaving(false);
-        	Counts.entering++;
-        	sim.add(v);
-        }
+        FileWriter fw = null;
+        BufferedWriter bw = null;
         
-        sim.run();
-
+		fw = new FileWriter(FILENAME);
+	    bw = new BufferedWriter(fw);
+	    bw.write("Run;" + "pEnter;" + "pLeave;" + "DoorsOpening;" 
+	    		+ "FirstLeaving;" + "LastLeaving;" + "LeaveTime;" + "Sec/Pers;" 
+	    		+ "FirstEntering;" + "LastEntering;" + "EnterTime;" + "Sec/Pers;");
+        
+        int run = 1;
+        int pLeave = 0;
+        int pEnter = 0;
+        
+        for (run = 1; run <= 15; run++){
+        	
+            Walls walls = new Walls();
+            
+            walls.getBoundaries();
+	        
+        	pLeave += 2;
+        	
+	        Simulation sim = new Simulation(net, walls);
+	        Dijkstra dijkstra = new Dijkstra();
+	        		
+	    	for (int i = 1 ; i <= pLeave; i++){
+	        	double xFrom = Math.random()*(0.9*Simulation.trainMaxX-Simulation.trainMinX)+1.1*Simulation.trainMinX;
+	        	double yFrom = Math.random()*(0.9*Simulation.trainMaxY-Simulation.trainMinY)+1.1*Simulation.trainMinY;
+	        	Vehicle v = new Vehicle(xFrom, yFrom, dijkstra.findRoute(xFrom, yFrom, 7), i);
+	        	v.setIsInside(true);
+	        	v.setLeaving(true);
+	        	sim.add(v);
+	        }
+	        for (int i = 1 ; i <= pEnter; i++){
+	        	double xFrom = Math.random()*(0.9*Simulation.trainMaxX-Simulation.trainMinX)+1.1*Simulation.trainMinX;
+	        	double yFrom = Math.random()*(0.9*Simulation.trainMinY);
+	        	Vehicle v = new Vehicle(xFrom, yFrom, dijkstra.findRoute(xFrom, yFrom, 8), 1000+i);
+	        	v.setIsInside(false);
+	        	v.setLeaving(false);
+	        	sim.add(v);
+	        }
+	        
+	        String result = sim.run(run, pEnter, pLeave);
+	        
+	        bw.newLine();
+	        bw.write(result);
+        }
+//        sim.end();
+        
+        bw.close();
+        fw.close();
+        
     }
 
-    private void run() {
+//    private void end() {
+//		this.vis.frame.dispose();
+//	}
+
+	private String run(int run, int pEnter, int pLeave) {
     	
     	double time = 0;
-        double maxTime = 1000;
+        double maxTime = 100;
+        Count count = new Count(run, pEnter, pLeave);
         
         while (time < maxTime) {
         	
-        	if (time > 10 && !doorsOpen) {
+        	if (time > 5 && !doorsOpen) {
         		for (Wall w : Simulation.walls.getWalls().values()){
         			if (w.isDoor()){
         				w.setOpen(true);
         			}
     			}
     			this.doorsOpen = true;
-    			Counts.setDoorsOpeningTime(time);
+    			count.setDoorsOpeningTime(time);
     			System.out.println("doors open at: " + time);
         	} 	        	
         	
             for (Vehicle v : Simulation.vehs) {
                 v.update(Simulation.vehs);
             }
+            count.checkPositions(Simulation.vehs, time);
+            
             Iterator<Vehicle> it = Simulation.vehs.iterator();
             while (it.hasNext()) {
                 Vehicle v = it.next();
                 if(!v.move()){
                 	it.remove();
+                	System.out.println(vehs.size());
                 }
             }
             
-            Counts.checkPositions(Simulation.vehs, time);
+            if (vehs.size() == 0){
+            	String result = count.getResult();
+            	return result;
+            }
 
             //
             List<VehicleInfo> vInfos = new ArrayList<>();
             for (Vehicle v : Simulation.vehs) {
-                VehicleInfo vi = new VehicleInfo(v.getX(), v.getY(), v.getR(), v.getId(), v.getViewX(), v.getViewY());
+                VehicleInfo vi = new VehicleInfo(v.getX(), v.getY(), v.getR(), v.getId(), v.getViewX(), v.getViewY(), v.getViewR());
                 vInfos.add(vi);
             }
-            this.vis.update(time, vInfos);
+//            this.vis.update(time, vInfos);
 
             time += H;
 
@@ -170,6 +189,8 @@ public class Simulation {
                 e.printStackTrace();
             }
         }
+        
+        return "Simulation failed... Time is over without all agents reaching their destination.";
     }
 
     private void add(Vehicle v1) {
