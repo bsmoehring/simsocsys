@@ -36,6 +36,7 @@ public class Vehicle extends HasCoords{
     private double vy = 0;
     private double speed = 1.34;
     private double maxSpeed = 2.0;
+    private double currentSpeed;
     private double tau = 0.5;
     private double weight = 80.0;
     private boolean inside;
@@ -44,7 +45,7 @@ public class Vehicle extends HasCoords{
     
     
 	//    abstoﬂende Kr‰fte
-    private double r = 0.3;
+    private double r = 0.25;
 
 	private double x;
     private double y;
@@ -114,6 +115,8 @@ public class Vehicle extends HasCoords{
     		this.vy = (this.vy/v)*this.maxSpeed;
     	}
         this.phi = Math.atan2(this.vy,this.vx);
+        
+        this.currentSpeed = Math.sqrt(this.vx*this.vx+this.vy*this.vy);
         
 //        //TODO: recalculate path when stuck
 //        double d = Math.sqrt(this.vx*this.vx+this.vy*this.vy);
@@ -292,13 +295,12 @@ public class Vehicle extends HasCoords{
         this.y = this.y + Simulation.H * this.vy;
 
         if (this.route != null){
-//	        Link currentLink = this.route.get(this.routeIndex);
+	        Link currentLink = this.route.get(this.routeIndex);
 	        double d = pointDistance(this.route.get(this.routeIndex).getTo(), this);
-	        if ( 
-//	        		(currentLink.hasVehicleReachedEndOfLink(this) && d < this.r) 
+	        if (currentLink.hasVehicleReachedEndOfLink(this) 
 //	        		possible way to ease destination mistakes by focusing on a node in a wrong direction
-//	        		|| 
-	        		d < this.r*2
+	        		|| 
+	        		d < this.r*3
 	        		) {
 	            this.routeIndex++;
 	            if (this.routeIndex == this.route.size() ){

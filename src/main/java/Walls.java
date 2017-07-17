@@ -19,6 +19,9 @@ public class Walls {
         Wall w8 = this.createWall(11.02, 3.30, 12.55, 3.30, false, 8);
         Wall w9 = this.createWall(00.35, 1.00, 00.35, 3.30, false, 9);
         
+//        Wall w00= this.createWall(12.55, 3.30, 999.0, 3.30, false, 10);
+//        Wall w01= this.createWall(12.55, 1.00, 999.9, 1.00, false, 11);
+        
         Wall d1 = this.createWall(01.88, 1.00, 03.18, 1.00, true, 101);
         Wall d2 = this.createWall(01.88, 3.30, 03.18, 3.30, false, 102);
         Wall d3 = this.createWall(05.80, 1.00, 07.10, 1.00, true, 103);

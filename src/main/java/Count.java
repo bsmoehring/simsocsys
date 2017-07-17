@@ -17,10 +17,13 @@ public class Count {
 	private double firstEnteringTime;
 	private double lastEnteringTime;
 	
-	public Count(int run, int pEnter, int pLeave){
+	private double speed;
+	
+	public Count(int run, int pEnter, int pLeave, double speed){
 		this.run = run;
 		this.pEnter = pEnter;
 		this. pLeave = pLeave;
+		this.speed = speed;
 	}
 	
 	public int getRun(){
@@ -46,7 +49,7 @@ public class Count {
 		this.doorsClosingTime = time;
 	}
 	public void checkPositions(List<Vehicle> vehs, double time) {
-		
+
 		for (Vehicle v : vehs){
 			boolean isInside = checkInside(v);
 			boolean wasInside = v.isInside();
@@ -75,6 +78,7 @@ public class Count {
 //				System.out.println(time + " " + v.getId() + " left.");
 			}
 		}
+
 		
 //		if (Counts.pLeft >= Counts.leaving){
 //			for (Vehicle v : vehs){
@@ -103,10 +107,14 @@ public class Count {
 	public String getResult() {
 		double leavingTime = (lastLeavingTime-firstLeavingTime);
 		double enteringTime = (lastEnteringTime - firstEnteringTime);
-		String result = getRun() + ";" + getPEnter() + ";" + getPLeave() + ";" + getDoorsOpeningTime() + ";" 
+		String result = getRun() + ";" + getPEnter() + ";" + getPLeave() + ";" + this.speed + ";" + getDoorsOpeningTime() + ";" 
 				+ firstLeavingTime + ";" + lastLeavingTime + ";" + leavingTime + ";" + (leavingTime/pLeave) + ";" +  
 				+ firstEnteringTime + ";" + lastEnteringTime + ";" + enteringTime + ";" + (enteringTime/pEnter) + ";";
 		return result;
 	}
+//	public String getResult(){
+//		String result = Double.toString(this.maxX);
+//		return result;
+//	}
 
 }

@@ -37,7 +37,7 @@ public class Simulation {
     public static final double H = 0.01;
     
     public static final double A = 2000;
-    public static final double B = 0.01;
+    public static final double B = 0.08;
     public static final double K = 120000;
     public static final double KAPPA = 240000;
 	
@@ -46,8 +46,8 @@ public class Simulation {
 	public static double trainMinY;
 	public static double trainMaxY;
 	
-    private final Vis vis;
-    private static List<Vehicle> vehs = new ArrayList<>();
+//    private final Vis vis;
+    private static List<Vehicle> vehs;
     public static Network net;
     public static Walls walls;
     public boolean doorsOpen = false;
@@ -55,7 +55,8 @@ public class Simulation {
     public Simulation(Network net, Walls walls) {
     	Simulation.walls = walls;
         Simulation.net = net;
-    	this.vis = new Vis(net, walls);
+//    	this.vis = new Vis(net, walls);
+    	Simulation.vehs = new ArrayList<>();
         
     }
 
@@ -68,15 +69,18 @@ public class Simulation {
         
 		fw = new FileWriter(FILENAME);
 	    bw = new BufferedWriter(fw);
-	    bw.write("Run;" + "pEnter;" + "pLeave;" + "DoorsOpening;" 
+	    bw.write("Run;" + "pEnter;" + "pLeave;" + "speed;" + "DoorsOpening;" 
 	    		+ "FirstLeaving;" + "LastLeaving;" + "LeaveTime;" + "Sec/Pers;" 
 	    		+ "FirstEntering;" + "LastEntering;" + "EnterTime;" + "Sec/Pers;");
+//		bw.write("Radius;"+"Länge;"+"Vehs;");
         
-        int run = 1;
-        int pLeave = 50;
+        double speed = 0.4;
+        int pLeave = 15;
         int pEnter = 0;
         
-        for (run = 1; run <= 10; run++){
+        for (int run = 1; run <= 15; run++){
+        	
+        	speed += 0.1;
         	
             Walls walls = new Walls();
             
@@ -88,13 +92,14 @@ public class Simulation {
 	        Dijkstra dijkstra = new Dijkstra();
 	        		
 	    	for (int i = 1 ; i <= pLeave; i++){
-	        	double xFrom = Math.random()*(0.9*Simulation.trainMaxX-Simulation.trainMinX)+1.1*Simulation.trainMinX;
-//	        	double xFrom = Math.random()*(0.9*5-Simulation.trainMinX)+1.1*Simulation.trainMinX;
+//	        	double xFrom = Math.random()*(0.9*Simulation.trainMaxX-Simulation.trainMinX)+1.1*Simulation.trainMinX;
+	        	double xFrom = Math.random()*(0.9*5-Simulation.trainMinX)+1.1*Simulation.trainMinX;
 	        	double yFrom = Math.random()*(0.9*Simulation.trainMaxY-Simulation.trainMinY)+1.1*Simulation.trainMinY;
 	        	Vehicle v = new Vehicle(xFrom, yFrom, dijkstra.findRoute(xFrom, yFrom, net.getNodes().get(10)), i);
 //	        	Vehicle v = new Vehicle(xFrom, yFrom, dijkstra.findRoute(xFrom, yFrom, true), i);
 	        	v.setIsInside(true);
 	        	v.setLeaving(true);
+	        	v.setSpeed(speed);
 	        	sim.add(v);
 	        }
 	        for (int i = 1 ; i <= pEnter; i++){
@@ -106,7 +111,7 @@ public class Simulation {
 	        	sim.add(v);
 	        }
 	        
-	        String result = sim.run(run, pEnter, pLeave);
+	        String result = sim.run(run, pEnter, pLeave, speed);
 	        
 	        bw.newLine();
 	        bw.write(result);
@@ -117,19 +122,15 @@ public class Simulation {
         
     }
 
-//    private void end() {
-//		this.vis.frame.dispose();
-//	}
-
-	private String run(int run, int pEnter, int pLeave) {
+	private String run(int run, int pEnter, int pLeave, double speed) {
     	
     	double time = 0;
-        double maxTime = 100;
-        Count count = new Count(run, pEnter, pLeave);
+        double maxTime = 60;
+        Count count = new Count(run, pEnter, pLeave, speed);
         
         while (time < maxTime) {
         	
-        	if (time > 5 && !doorsOpen) {
+        	if (time > 10 && !doorsOpen) {
         		for (Wall w : Simulation.walls.getWalls().values()){
         			if (w.isDoor()){
         				w.setOpen(true);
@@ -165,7 +166,7 @@ public class Simulation {
                 VehicleInfo vi = new VehicleInfo(v.getX(), v.getY(), v.getR(), v.getId(), v.getViewX(), v.getViewY(), v.getViewR());
                 vInfos.add(vi);
             }
-            this.vis.update(time, vInfos);
+//            this.vis.update(time, vInfos);
 
             time += H;
 
@@ -175,6 +176,7 @@ public class Simulation {
                 e.printStackTrace();
             }
         }
+//        return count.getResult();
         
         return "Simulation failed... Time is over without all agents reaching their destination.";
     }
