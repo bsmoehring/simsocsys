@@ -37,39 +37,39 @@ public class Network {
         Node n18 = createNode	(04.95, 02.15, 18);
         
 		Node n41 = createNode	(06.125, 01.00, 41);
-		Node n42 = createNode(06.775, 01.00, 42);
+		Node n42 = createNode	(06.775, 01.00, 42);
 //        Node n43 = createNode(06.45, 01.50, 43);
-        Node n44 = createNode(06.125, 01.825, 44);
-        Node n45 = createNode(06.775, 01.825, 45);
-        Node n46 = createNode(05.8, 02.15, 46);
-        Node n47 = createNode(06.45, 02.80, 47);
-        Node n48 = createNode(06.45, 03.30, 48);
-        Node n49 = createNode(07.1, 02.15, 49);
-        Node n410 = createNode(06.125, -9.00, 410);
-        Node n411 = createNode(06.775, -9.00, 411);
-        Node n412 = createNode(06.125, 0.50, 412);
-        Node n413 = createNode(06.775, 0.50, 413);
-        Node n414 = createNode(04.92, 02.15, 414);
+        Node n44 = createNode	(06.125, 01.825, 44);
+        Node n45 = createNode	(06.775, 01.825, 45);
+        Node n46 = createNode	(05.8, 02.15, 46);
+        Node n47 = createNode	(06.45, 02.80, 47);
+        Node n48 = createNode	(06.45, 03.30, 48);
+        Node n49 = createNode	(07.1, 02.15, 49);
+        Node n410 = createNode	(06.125, -9.00, 410);
+        Node n411 = createNode	(06.775, -9.00, 411);
+        Node n412 = createNode	(06.125, 0.50, 412);
+        Node n413 = createNode	(06.775, 0.50, 413);
+//        Node n414 = createNode	(04.92, 02.15, 414);
         
-        Node n915 = createNode(07.98, 0.50, 915);   
-        Node n916 = createNode(08.87, 0.50, 916);
-        Node n917 = createNode(07.98, 02.15, 917);   
-        Node n918 = createNode(08.87, 02.15, 918);
+        Node n915 = createNode	(07.98, 0.50, 915);   
+        Node n916 = createNode	(08.87, 0.50, 916);
+        Node n917 = createNode	(07.98, 02.15, 917);   
+        Node n918 = createNode	(08.87, 02.15, 918);
         
-        Node n51 = createNode(10.045, 01.00, 51);
-		Node n52 = createNode(10.695, 01.00, 52);
-//        Node n53 = createNode(10.37, 01.50, 53);
-        Node n54 = createNode(10.045, 01.825, 54);
-        Node n55 = createNode(10.695, 01.825, 55);
-        Node n56 = createNode(09.72, 02.15, 56);
-        Node n57 = createNode(10.37, 02.80, 57);
-        Node n58 = createNode(10.37, 03.30, 58);
-        Node n59 = createNode(11.02, 02.15, 59);
-        Node n510 = createNode(10.045, -9.00, 510);
-        Node n511 = createNode(10.695, -9.00, 511);
+        Node n51 = createNode	(10.045, 01.00, 51);
+		Node n52 = createNode	(10.695, 01.00, 52);
+//        Node n53 = createNode	(10.37, 01.50, 53);
+        Node n54 = createNode	(10.045, 01.825, 54);
+        Node n55 = createNode	(10.695, 01.825, 55);
+        Node n56 = createNode	(09.72, 02.15, 56);
+        Node n57 = createNode	(10.37, 02.80, 57);
+        Node n58 = createNode	(10.37, 03.30, 58);
+        Node n59 = createNode	(11.02, 02.15, 59);
+        Node n510 = createNode	(10.045, -9.00, 510);
+        Node n511 = createNode	(10.695, -9.00, 511);
         Node n512 = createNode(10.045, 0.50, 512);
         Node n513 = createNode(10.695, 0.50, 513);
-        Node n514 = createNode(08.84, 02.15, 514);
+//        Node n514 = createNode(08.84, 02.15, 514);
         
         Node n1015 = createNode(11.90, 0.50, 1015);   
         Node n1016 = createNode(12.79, 0.50, 1016);
@@ -89,7 +89,7 @@ public class Network {
         Node n611 = createNode(14.615, -9.00, 611);
         Node n612 = createNode(13.965, 0.50, 612);
         Node n613 = createNode(14.615, 0.50, 613);
-        Node n614 = createNode(12.76, 02.15, 614);
+//        Node n614 = createNode(12.76, 02.15, 614);
         
         Node n1115 = createNode(15.82, 0.50, 1115);   
         Node n1116 = createNode(16.71, 0.50, 1116);
@@ -137,8 +137,8 @@ public class Network {
         Link l92_rev= createLink	(n18 ,n17, 52, 1);
         Link l93 	= createLink	(n15, n13, 49, 1);
         Link l93_rev= createLink	(n13 ,n15, 50, 1);
-        Link l94 	= createLink	(n15, n16, 51, 1);
-        Link l94_rev= createLink	(n16 ,n15, 52, 1);
+//        Link l94 	= createLink	(n15, n16, 51, 1);
+//        Link l94_rev= createLink	(n16 ,n15, 52, 1);
         Link l95 	= createLink	(n412, n16, 51, 1);
         Link l95_rev= createLink	(n16 ,n412, 52, 1);
 
@@ -168,8 +168,8 @@ public class Network {
         Link l411_rev = createLink	(n49 ,n47, 20, 1);
         Link l412 	= createLink	(n48, n47, 21, 1);
         Link l412_rev = createLink	(n47 ,n48, 22, 1);
-        Link l413 	= createLink	(n414, n46, 23, 1);
-        Link l413_rev = createLink	(n46 ,n414, 24, 1);
+        Link l413 	= createLink	(n18, n46, 23, 1);
+        Link l413_rev = createLink	(n46 ,n18, 24, 1);
         Link l414 	= createLink	(n412, n413, 23, 1);
         Link l414_rev = createLink	(n413 ,n412, 24, 1);
         Link l416 	= createLink	(n410, n411, 23, 1);
@@ -212,8 +212,8 @@ public class Network {
         Link l511_rev = createLink	(n59 ,n57, 20, 1);
         Link l512 	= createLink	(n58, n57, 21, 1);
         Link l512_rev = createLink	(n57 ,n58, 22, 1);
-        Link l513 	= createLink	(n514, n56, 23, 1);
-        Link l513_rev = createLink	(n56 ,n514, 24, 1);
+        Link l513 	= createLink	(n918, n56, 23, 1);
+        Link l513_rev = createLink	(n56 ,n918, 24, 1);
         Link l514 	= createLink	(n512, n513, 23, 1);
         Link l514_rev = createLink	(n513 ,n512, 24, 1);
         Link l516 	= createLink	(n510, n511, 23, 1);
@@ -256,8 +256,8 @@ public class Network {
         Link l611_rev = createLink	(n69 ,n67, 20, 1);
         Link l612 	= createLink	(n68, n67, 21, 1);
         Link l612_rev = createLink	(n67 ,n68, 22, 1);
-        Link l613 	= createLink	(n614, n66, 23, 1);
-        Link l613_rev = createLink	(n66 ,n614, 24, 1);
+        Link l613 	= createLink	(n1018, n66, 23, 1);
+        Link l613_rev = createLink	(n66 ,n1018, 24, 1);
         Link l614 	= createLink	(n612, n613, 23, 1);
         Link l614_rev = createLink	(n613 ,n612, 24, 1);
         Link l616 	= createLink	(n610, n611, 23, 1);
