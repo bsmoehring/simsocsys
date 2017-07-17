@@ -20,6 +20,9 @@
 
 
 import java.util.List;
+import java.util.Queue;
+
+import org.apache.commons.collections4.queue.CircularFifoQueue;
 
 import processing.core.PVector;
 
@@ -28,8 +31,6 @@ import processing.core.PVector;
  */
 public class Vehicle extends HasCoords{
 
-
-    private List<Link> route;
     private final int id;
     private double vx = 0;
     private double vy = 0;
@@ -40,7 +41,8 @@ public class Vehicle extends HasCoords{
     private boolean inside;
     private boolean leaving;
     private boolean waiting = false;
-
+    
+    
 	//    abstoﬂende Kr‰fte
     private double r = 0.3;
 
@@ -52,25 +54,24 @@ public class Vehicle extends HasCoords{
     private double viewY ;
 	private double viewR;
 
-    private int routeIndex = 0;
+	private List<Link> route;
+	private int routeIndex = 0;
+//	private Queue<Double> progress;
+//	private double recentDistance;
 
     public Vehicle(double x, double y, List<Link> route, int id) {
         this.id = id;
     	this.x = x;
         this.y = y;
         this.route = route;
+//        this.progress = new CircularFifoQueue<Double>((int)(Math.round(1/Simulation.H)));
+//        System.out.println("size: " + progress.size());
     }
 
     public void update(List<Vehicle> vehs) {
     	
     	double dx = 0;
     	double dy = 0;
-    	
-//    	if (this.waiting){
-//    		this.speed = 0.1;
-//    	} else {
-//    		this.speed = 1.34;
-//    	}
     	
     	if (route != null){
 	    	
@@ -113,6 +114,16 @@ public class Vehicle extends HasCoords{
     		this.vy = (this.vy/v)*this.maxSpeed;
     	}
         this.phi = Math.atan2(this.vy,this.vx);
+        
+//        //TODO: recalculate path when stuck
+//        double d = Math.sqrt(this.vx*this.vx+this.vy*this.vy);
+//        progress.add(d);
+//        System.out.println("step: " + progress.size() + " distance: " + this.recentDistance);
+//        this.recentDistance -= progress.peek();
+//        this.recentDistance += d;
+//        if (this.recentDistance < this.speed/10){
+//        	System.out.println("STUCK");
+//        }
     }
     
     private void checkFreePath(List<Vehicle> vehs, double dx, double dy) {
@@ -281,13 +292,13 @@ public class Vehicle extends HasCoords{
         this.y = this.y + Simulation.H * this.vy;
 
         if (this.route != null){
-	        Link currentLink = this.route.get(this.routeIndex);
-	        
-	        if (
-	        		currentLink.hasVehicleReachedEndOfLink(this) 
+//	        Link currentLink = this.route.get(this.routeIndex);
+	        double d = pointDistance(this.route.get(this.routeIndex).getTo(), this);
+	        if ( 
+//	        		(currentLink.hasVehicleReachedEndOfLink(this) && d < this.r) 
 //	        		possible way to ease destination mistakes by focusing on a node in a wrong direction
-	        		|| 
-	        		pointDistance(this.route.get(this.routeIndex).getTo(), this) < this.r*2
+//	        		|| 
+	        		d < this.r*2
 	        		) {
 	            this.routeIndex++;
 	            if (this.routeIndex == this.route.size() ){
