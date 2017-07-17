@@ -11,11 +11,19 @@ public class Dijkstra {
 	public Dijkstra() {
 		
 	}
+	
+	public List<Link> findRoute(double xFrom, double yFrom, boolean leaving){
+		if (leaving){
+			return this.findRoute(xFrom, yFrom, this.getLeavingDestination(xFrom, yFrom));
+		} else {
+			return this.findRoute(xFrom, yFrom, this.getEnteringDestination(xFrom, yFrom));
+		}
+	}
 
-	public List<Link> findRoute(double xFrom, double yFrom, int dest){
+	public List<Link> findRoute(double xFrom, double yFrom, Node dest){
 		
 		Node start = getClosestNode(xFrom, yFrom);
-		Node destination = Simulation.net.getNodes().get(dest);
+		Node destination = dest;
 		
 		List<Link> route = new ArrayList<>();
 		
@@ -79,6 +87,37 @@ public class Dijkstra {
 			if (nodeDistance<closestDistance){
 				closestDistance = nodeDistance;
 				closest = n;
+			}
+		}
+		
+		return closest;
+	}
+	
+	private Node getLeavingDestination(double xFrom, double yFrom){
+		Node closest = null; 
+		double closestDistance = Double.POSITIVE_INFINITY;
+		for (Node n : Simulation.net.getNodes().values()){
+			if(n.getId() == 10 ||n.getId() == 11 ||n.getId() == 410 ||n.getId() == 411 ||n.getId() == 510 ||n.getId() == 511){
+				double nodeDistance = (xFrom-n.getX())*(xFrom-n.getX())+(yFrom-n.getY())*(yFrom-n.getY());
+				if (nodeDistance<closestDistance){
+					closestDistance = nodeDistance;
+					closest = n;
+				}
+			}
+		}
+		
+		return closest;
+	}
+	private Node getEnteringDestination(double xFrom, double yFrom){
+		Node closest = null; 
+		double closestDistance = Double.POSITIVE_INFINITY;
+		for (Node n : Simulation.net.getNodes().values()){
+			if(n.getId() == 14 ||n.getId() == 414 ||n.getId() == 514 ||n.getId() == 614 ){
+				double nodeDistance = (xFrom-n.getX())*(xFrom-n.getX())+(yFrom-n.getY())*(yFrom-n.getY());
+				if (nodeDistance<closestDistance){
+					closestDistance = nodeDistance;
+					closest = n;
+				}
 			}
 		}
 		
