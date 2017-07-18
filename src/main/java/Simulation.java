@@ -30,7 +30,7 @@ import java.util.List;
  * Created by laemmel on 24/04/16.
  */
 public class Simulation {
-	private static final String FILENAME = "D:/Dropbox/SimSozSys/output/output1.csv";
+	private static final String FILENAME = "D:/Wichtiges/TUBerlin/SS17/SimulationSozialerSysteme/output/output1.csv";
 	
     public static final double SCALE = 70;
 
@@ -51,6 +51,8 @@ public class Simulation {
     public static Network net;
     public static Walls walls;
     public boolean doorsOpen = false;
+    
+    public static double time = 0;
 
     public Simulation(Network net, Walls walls) {
     	Simulation.walls = walls;
@@ -74,51 +76,60 @@ public class Simulation {
 	    		+ "FirstEntering;" + "LastEntering;" + "EnterTime;" + "Sec/Pers;");
 //		bw.write("Radius;"+"Länge;"+"Vehs;");
         
-        double speed = 0.4;
-        int pLeave = 15;
+	    int run = 1;
+        double speed ;
+        int pLeave = 5;
         int pEnter = 0;
         
-        for (int run = 1; run <= 15; run++){
-        	
-        	speed += 0.1;
-        	
-            Walls walls = new Walls();
-            
-            walls.getBoundaries();
-	        
-//        	pLeave += 2;
-        	
-	        Simulation sim = new Simulation(net, walls);
-	        Dijkstra dijkstra = new Dijkstra();
-	        		
-	    	for (int i = 1 ; i <= pLeave; i++){
-//	        	double xFrom = Math.random()*(0.9*Simulation.trainMaxX-Simulation.trainMinX)+1.1*Simulation.trainMinX;
-	        	double xFrom = Math.random()*(0.9*5-Simulation.trainMinX)+1.1*Simulation.trainMinX;
-	        	double yFrom = Math.random()*(0.9*Simulation.trainMaxY-Simulation.trainMinY)+1.1*Simulation.trainMinY;
-	        	Vehicle v = new Vehicle(xFrom, yFrom, dijkstra.findRoute(xFrom, yFrom, net.getNodes().get(10)), i);
-//	        	Vehicle v = new Vehicle(xFrom, yFrom, dijkstra.findRoute(xFrom, yFrom, true), i);
-	        	v.setIsInside(true);
-	        	v.setLeaving(true);
-	        	v.setSpeed(speed);
-	        	sim.add(v);
+        for (int j = 1 ; j<=6 ; j++){
+        	pLeave += 5;
+        	speed = 1.09;
+	        for (run = 1; run <= 40; run++){
+	        	speed += 0.01;
+	        	
+	        	System.out.println("RUN: " + pLeave +" " + speed);
+	        	
+	            Walls walls = new Walls();
+	            
+	            walls.getBoundaries();
+		        
+	//        	pLeave += 2;
+	        	
+		        Simulation sim = new Simulation(net, walls);
+		        Dijkstra dijkstra = new Dijkstra();
+		        		
+		    	for (int i = 1 ; i <= pLeave; i++){
+	//	        	double xFrom = Math.random()*(0.9*Simulation.trainMaxX-Simulation.trainMinX)+1.1*Simulation.trainMinX;
+		        	double xFrom = Math.random()*(0.9*0.5*pLeave-Simulation.trainMinX)+1.1*Simulation.trainMinX;
+		        	double yFrom = Math.random()*(0.9*Simulation.trainMaxY-Simulation.trainMinY)+1.1*Simulation.trainMinY;
+		        	Vehicle v = new Vehicle(xFrom, yFrom, dijkstra.findRoute(xFrom, yFrom, net.getNodes().get(10)), i);
+	//	        	Vehicle v = new Vehicle(xFrom, yFrom, dijkstra.findRoute(xFrom, yFrom, true), i);
+		        	v.setIsInside(true);
+		        	v.setLeaving(true);
+		        	v.setSpeed(speed);
+		        	sim.add(v);
+		        }
+		        for (int i = 1 ; i <= pEnter; i++){
+		        	double xFrom = Math.random()*(0.9*Simulation.trainMaxX-Simulation.trainMinX)+1.1*Simulation.trainMinX;
+		        	double yFrom = Math.random()*(0.9*Simulation.trainMinY);
+		        	Vehicle v = new Vehicle(xFrom, yFrom, dijkstra.findRoute(xFrom, yFrom, false), 1000+i);
+		        	v.setIsInside(false);
+		        	v.setLeaving(false);
+		        	sim.add(v);
+		        }
+		        
+		        String result = sim.run(run, pEnter, pLeave, speed);
+		        System.out.println(result);
+		        
+		        bw.newLine();
+		        bw.write(result);
 	        }
-	        for (int i = 1 ; i <= pEnter; i++){
-	        	double xFrom = Math.random()*(0.9*Simulation.trainMaxX-Simulation.trainMinX)+1.1*Simulation.trainMinX;
-	        	double yFrom = Math.random()*(0.9*Simulation.trainMinY);
-	        	Vehicle v = new Vehicle(xFrom, yFrom, dijkstra.findRoute(xFrom, yFrom, false), 1000+i);
-	        	v.setIsInside(false);
-	        	v.setLeaving(false);
-	        	sim.add(v);
-	        }
-	        
-	        String result = sim.run(run, pEnter, pLeave, speed);
-	        
-	        bw.newLine();
-	        bw.write(result);
-        }
+    	}
         
         bw.close();
         fw.close();
+        
+        System.out.println("output written to: " + FILENAME);
         
     }
 
@@ -169,6 +180,7 @@ public class Simulation {
 //            this.vis.update(time, vInfos);
 
             time += H;
+            this.time = time;
 
             try {
                 Thread.sleep((long) (H * 1000));
