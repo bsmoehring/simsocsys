@@ -38,14 +38,17 @@ public class VehicleInfo {
     private final int viewY;  
     private final int viewR;
     
+    private final boolean leaving;
+    
     private final int r;
 
-    public VehicleInfo(double x, double y, double r, int id, double viewX, double viewY, double viewR) {
+    public VehicleInfo(double x, double y, double r, int id, double viewX, double viewY, double viewR, boolean leaving) {
         this.x = (int) (Simulation.SCALE * x);
         this.y = (int) (Simulation.SCALE * y);
         this.viewX = (int) (Simulation.SCALE * viewX);
         this.viewY = (int) (Simulation.SCALE * viewY);
         this.viewR = (int) (Simulation.SCALE * viewR);
+        this.leaving = leaving;
         
         this.id = id;
 
@@ -53,16 +56,21 @@ public class VehicleInfo {
     }
 
     public void draw(PApplet p) {
-        p.pushMatrix();
         
-        p.pushMatrix();
-        p.translate(viewX, viewY);
-        p.fill(255, 255, 255);
-        p.ellipse(0, 0, this.viewR, this.viewR);
-        p.popMatrix();
         
+//        p.pushMatrix();
+//        p.translate(viewX, viewY);
+//        p.fill((float)(255), (float)(255), (float)(255), (float)(0));
+//        p.ellipse(0, 0, this.viewR*2, this.viewR*2);
+//        p.popMatrix();
+    	
+    	p.pushMatrix();
         p.translate(x, y);
-        p.fill(0, 0, 255);
+        if(this.leaving){
+        	p.fill(255,0,0);
+        } else {
+        	p.fill(0, 0, 255);
+        }
         p.ellipse(0, 0, this.r, this.r);
         p.popMatrix();
 
