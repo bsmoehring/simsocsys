@@ -95,7 +95,47 @@ public class Network {
         Node n1116 = createNode(16.71, 0.50, 1116);
         Node n1117 = createNode(15.82, 02.15, 1117);   
         Node n1118 = createNode(16.71, 02.15, 1118);
-      
+
+        Node n71 = createNode(17.885, 01.00, 71);
+		Node n72 = createNode(18.535, 01.00, 72);
+//        Node n63 = createNode(14.29, 01.50, 73);
+        Node n74 = createNode(17.885, 01.825, 74);
+        Node n75 = createNode(18.535, 01.825, 75);
+        Node n76 = createNode(17.59, 02.15, 76);
+        Node n77 = createNode(18.21, 02.80, 77);
+        Node n78 = createNode(18.21, 03.30, 78);
+        Node n79 = createNode(18.86, 02.15, 79);
+        Node n710 = createNode(17.885, -9.00, 710);
+        Node n711 = createNode(18.535, -9.00, 711);
+        Node n712 = createNode(17.885, 0.50, 712);
+        Node n713 = createNode(18.535, 0.50, 713);
+//        Node n614 = createNode(12.76, 02.15, 714);
+
+        Node n1215 = createNode(19.74, 0.50, 1215);   
+        Node n1216 = createNode(20.63, 0.50, 1216);
+        Node n1217 = createNode(19.74, 02.15, 1217);   
+        Node n1218 = createNode(20.63, 02.15, 1218);
+        
+        Node n81 = createNode(21.805, 01.00, 81);
+		Node n82 = createNode(22.455, 01.00, 82);
+//        Node n63 = createNode(14.29, 01.50, 73);
+        Node n84 = createNode(21.805, 01.825, 84);
+        Node n85 = createNode(22.455, 01.825, 85);
+        Node n86 = createNode(21.51, 02.15, 86);
+        Node n87 = createNode(22.13, 02.80, 87);
+        Node n88 = createNode(22.13, 03.30, 88);
+        Node n89 = createNode(22.78, 02.15, 89);
+        Node n810 = createNode(21.805, -9.00, 810);
+        Node n811 = createNode(22.455, -9.00, 811);
+        Node n812 = createNode(21.805, 0.50, 812);
+        Node n813 = createNode(22.455, 0.50, 813);
+//        Node n614 = createNode(12.76, 02.15, 714);
+
+        Node n1315 = createNode(23.66, 0.50, 1315);   
+        Node n1316 = createNode(24.55, 0.50, 1316);
+        Node n1317 = createNode(23.66, 02.15, 1317);   
+        Node n1318 = createNode(24.55, 02.15, 1318);
+        
         Link l0 	= createLink	(n1, n12, 1, 0);
         Link l0_rev = createLink	(n12, n1, 2, 0);
         Link l1 	= createLink	(n12, n10, 1, 0);
@@ -271,6 +311,94 @@ public class Network {
         Link l393_rev= createLink	(n613 ,	n1115, 50, 1);
         Link l394 	= createLink	(n1115, n1116, 51, 1);
         Link l394_rev= createLink	(n1116 ,n1115, 52, 1);
+        Link l395 	= createLink	(n712, n1116, 51, 1);
+        Link l395_rev= createLink	(n1116 ,n712, 52, 1);
+
+        Link l70 	= createLink	(n71, n712, 1, 0);
+        Link l70_rev = createLink	(n712, n71, 2, 0);
+        Link l71 	= createLink	(n712,n710, 1, 0);
+        Link l71_rev = createLink	(n710,n712, 2, 0);
+        Link l72 	= createLink	(n72, n713, 3, 0);
+        Link l72_rev = createLink	(n713,n72, 4, 0);
+        Link l73 	= createLink	(n711,n713, 3, 0);
+        Link l73_rev = createLink	(n713,n711, 4, 0);
+        Link l74 	= createLink	(n74, n71, 5, 1);
+        Link l74_rev = createLink	(n71, n74, 6, 1);
+        Link l75 	= createLink	(n72, n75, 7, 1);
+        Link l75_rev = createLink	(n75, n72, 8, 1);
+        Link l76 	= createLink	(n74, n75, 9, 1);
+        Link l76_rev = createLink	(n75, n74, 10, 1);
+        Link l77 	= createLink	(n76, n79, 11, 1);
+        Link l77_rev = createLink	(n79, n76, 12, 1);
+        Link l78 	= createLink	(n74, n76, 13, 1);
+        Link l78_rev = createLink	(n76, n74, 14, 1);
+        Link l79 	= createLink	(n79, n75, 15, 1);
+        Link l79_rev = createLink	(n75 ,n79, 16, 1);
+        Link l710 	= createLink	(n77, n76, 17, 1);
+        Link l710_rev = createLink	(n76 ,n77, 18, 1);
+        Link l711 	= createLink	(n77, n79, 19, 1);
+        Link l711_rev = createLink	(n79 ,n77, 20, 1);
+        Link l712 	= createLink	(n78, n77, 21, 1);
+        Link l712_rev = createLink	(n77 ,n78, 22, 1);
+        Link l713 	= createLink	(n1118, n76, 23, 1);
+        Link l713_rev = createLink	(n76 ,n1118, 24, 1);
+        Link l714 	= createLink	(n712, n713, 23, 1);
+        Link l714_rev = createLink	(n713 ,n712, 24, 1);
+        Link l716 	= createLink	(n710, n711, 23, 1);
+        Link l716_rev = createLink	(n711 ,n710, 24, 1);
+        
+        Link l491 	= createLink	(n1217, n79, 49, 1);
+        Link l491_rev= createLink	(n79 ,	n1217, 50, 1);
+        Link l492 	= createLink	(n1217, n1218, 51, 1);
+        Link l492_rev= createLink	(n1218 ,n1217, 52, 1);
+        Link l493 	= createLink	(n1215, n713, 49, 1);
+        Link l493_rev= createLink	(n713 ,	n1215, 50, 1);
+        Link l494 	= createLink	(n1215, n1216, 51, 1);
+        Link l494_rev= createLink	(n1216 ,n1215, 52, 1);
+        Link l495 	= createLink	(n812, n1216, 51, 1);
+        Link l495_rev= createLink	(n1216 ,n812, 52, 1);
+
+        Link l80 	= createLink	(n81, n812, 1, 0);
+        Link l80_rev = createLink	(n812, n81, 2, 0);
+        Link l81 	= createLink	(n812,n810, 1, 0);
+        Link l81_rev = createLink	(n810,n812, 2, 0);
+        Link l82 	= createLink	(n82, n813, 3, 0);
+        Link l82_rev = createLink	(n813,n82, 4, 0);
+        Link l83 	= createLink	(n811,n813, 3, 0);
+        Link l83_rev = createLink	(n813,n811, 4, 0);
+        Link l84 	= createLink	(n84, n81, 5, 1);
+        Link l84_rev = createLink	(n81, n84, 6, 1);
+        Link l85 	= createLink	(n82, n85, 7, 1);
+        Link l85_rev = createLink	(n85, n82, 8, 1);
+        Link l86 	= createLink	(n84, n85, 9, 1);
+        Link l86_rev = createLink	(n85, n84, 10, 1);
+        Link l87 	= createLink	(n86, n89, 11, 1);
+        Link l87_rev = createLink	(n89, n86, 12, 1);
+        Link l88 	= createLink	(n84, n86, 13, 1);
+        Link l88_rev = createLink	(n86, n84, 14, 1);
+        Link l89 	= createLink	(n89, n85, 15, 1);
+        Link l89_rev = createLink	(n85 ,n89, 16, 1);
+        Link l810 	= createLink	(n87, n86, 17, 1);
+        Link l810_rev = createLink	(n86 ,n87, 18, 1);
+        Link l811 	= createLink	(n87, n89, 19, 1);
+        Link l811_rev = createLink	(n89 ,n87, 20, 1);
+        Link l812 	= createLink	(n88, n87, 21, 1);
+        Link l812_rev = createLink	(n87 ,n88, 22, 1);
+        Link l813 	= createLink	(n1218, n86, 23, 1);
+        Link l813_rev = createLink	(n86 ,n1218, 24, 1);
+        Link l814 	= createLink	(n812, n813, 23, 1);
+        Link l814_rev = createLink	(n813 ,n812, 24, 1);
+        Link l816 	= createLink	(n810, n811, 23, 1);
+        Link l816_rev = createLink	(n811 ,n810, 24, 1);
+        
+        Link l591 	= createLink	(n1317, n89, 49, 1);
+        Link l591_rev= createLink	(n89 ,	n1317, 50, 1);
+        Link l592 	= createLink	(n1317, n1318, 51, 1);
+        Link l592_rev= createLink	(n1318 ,n1317, 52, 1);
+        Link l593 	= createLink	(n1315, n813, 49, 1);
+        Link l593_rev= createLink	(n813 ,	n1315, 50, 1);
+        Link l594 	= createLink	(n1315, n1316, 51, 1);
+        Link l594_rev= createLink	(n1316 ,n1315, 52, 1);
 //        Link l295 	= createLink(n512, n1016, 51, 1);
 //        Link l295_rev= createLink(n1016 ,n512, 52, 1);
 	}
@@ -304,11 +432,11 @@ public class Network {
    	}
 
 	public void draw(PApplet p) {
-		p.stroke(0,255);
-		p.strokeWeight(1);
-   	    for (LinkInfo linkInfo : this.linkInfos) {
-   	        p.line(linkInfo.x0,linkInfo.y0,linkInfo.x1,linkInfo.y1);
-        }
+//		p.stroke(0,255);
+//		p.strokeWeight(1);
+//   	    for (LinkInfo linkInfo : this.linkInfos) {
+//   	        p.line(linkInfo.x0,linkInfo.y0,linkInfo.x1,linkInfo.y1);
+//        }
 
 	}
 
