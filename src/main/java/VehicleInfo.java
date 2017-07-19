@@ -67,9 +67,9 @@ public class VehicleInfo {
     	p.pushMatrix();
         p.translate(x, y);
         if(this.leaving){
-        	p.fill(255,0,0);
+        	p.fill(0,0,255);
         } else {
-        	p.fill(0, 0, 255);
+        	p.fill(255, 0, 0);
         }
         p.ellipse(0, 0, this.r, this.r);
         p.popMatrix();

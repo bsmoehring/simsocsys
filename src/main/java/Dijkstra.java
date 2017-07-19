@@ -97,7 +97,8 @@ public class Dijkstra {
 		Node closest = null; 
 		double closestDistance = Double.POSITIVE_INFINITY;
 		for (Node n : Simulation.net.getNodes().values()){
-			if(n.getId() == 10 ||n.getId() == 11 ||n.getId() == 410 ||n.getId() == 411 ||n.getId() == 510 ||n.getId() == 511){
+			if(n.getId() == 10 ||n.getId() == 11 ||n.getId() == 410 ||n.getId() == 411 ||n.getId() == 510 ||n.getId() == 511
+					 ||n.getId() == 610 ||n.getId() == 611 ||n.getId() == 710 ||n.getId() == 711 ||n.getId() == 810 ||n.getId() == 811){
 				double nodeDistance = (xFrom-n.getX())*(xFrom-n.getX())+(yFrom-n.getY())*(yFrom-n.getY());
 				if (nodeDistance<closestDistance){
 					closestDistance = nodeDistance;
@@ -112,7 +113,7 @@ public class Dijkstra {
 		Node closest = null; 
 		double closestDistance = Double.POSITIVE_INFINITY;
 		for (Node n : Simulation.net.getNodes().values()){
-			if(n.getId() == 14 ||n.getId() == 414 ||n.getId() == 514 ||n.getId() == 614 ){
+			if(n.getId() == 7 ||n.getId() == 47 ||n.getId() == 57 ||n.getId() == 67 ||n.getId() == 77 ||n.getId() == 87 ){
 				double nodeDistance = (xFrom-n.getX())*(xFrom-n.getX())+(yFrom-n.getY())*(yFrom-n.getY());
 				if (nodeDistance<closestDistance){
 					closestDistance = nodeDistance;

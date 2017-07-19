@@ -41,12 +41,17 @@ public class Simulation {
     public static final double K = 120000;
     public static final double KAPPA = 240000;
 	
+    public static final double SPEED = 1.25;
+    public static double waitingSpeed = 0.3;
+    
+    public static double viewR;
+    
 	public static double trainMinX;
 	public static double trainMaxX;
 	public static double trainMinY;
 	public static double trainMaxY;
 	
-//    private final Vis vis;
+    private static Vis vis;
     private static List<Vehicle> vehs;
     public static Network net;
     public static Walls walls;
@@ -57,7 +62,7 @@ public class Simulation {
     public Simulation(Network net, Walls walls) {
     	Simulation.walls = walls;
         Simulation.net = net;
-//    	this.vis = new Vis(net, walls);
+    	this.vis = new Vis(net, walls);
     	Simulation.vehs = new ArrayList<>();
         
     }
@@ -69,75 +74,71 @@ public class Simulation {
         FileWriter fw = null;
         BufferedWriter bw = null;
         
-		fw = new FileWriter(FILENAME);
-	    bw = new BufferedWriter(fw);
-	    bw.write("Run;" + "pEnter;" + "pLeave;" + "speed;" + "DoorsOpening;" 
-	    		+ "FirstLeaving;" + "LastLeaving;" + "LeaveTime;" + "Sec/Pers;" 
-	    		+ "FirstEntering;" + "LastEntering;" + "EnterTime;" + "Sec/Pers;");
+//		fw = new FileWriter(FILENAME);
+//	    bw = new BufferedWriter(fw);
+//	    bw.write("Run;" + "viewR;" + "pEnter;" + "pLeave;" + "DoorsOpening;" 
+//	    		+ "FirstLeaving;" + "LastLeaving;" + "LeaveTime;" + "Sec/Pers;" 
+//	    		+ "FirstEntering;" + "LastEntering;" + "EnterTime;" + "Sec/Pers;");
 //		bw.write("Radius;"+"Länge;"+"Vehs;");
         
 	    int run = 1;
-        double speed ;
-        int pLeave = 5;
-        int pEnter = 0;
+        int pLeave = 20;
+        int pEnter = 20;
         
-        for (int j = 1 ; j<=6 ; j++){
-        	pLeave += 5;
-        	speed = 1.09;
-	        for (run = 1; run <= 40; run++){
-	        	speed += 0.01;
-	        	
-	        	System.out.println("RUN: " + pLeave +" " + speed);
-	        	
+        for (int j = 1 ; j<=10 ; j++){
+        	pLeave ++;
+        	pEnter ++;
+        	Simulation.viewR = 3.0;
+//	        for (run = 1; run <= 30; run++){
+        	
+//	        	Simulation.viewR += 0.1;
+//    			pLeave += 2;
+        	
 	            Walls walls = new Walls();
-	            
 	            walls.getBoundaries();
-		        
-	//        	pLeave += 2;
-	        	
 		        Simulation sim = new Simulation(net, walls);
 		        Dijkstra dijkstra = new Dijkstra();
 		        		
 		    	for (int i = 1 ; i <= pLeave; i++){
-	//	        	double xFrom = Math.random()*(0.9*Simulation.trainMaxX-Simulation.trainMinX)+1.1*Simulation.trainMinX;
-		        	double xFrom = Math.random()*(0.9*0.5*pLeave-Simulation.trainMinX)+1.1*Simulation.trainMinX;
+		        	double xFrom = Math.random()*(0.9*Simulation.trainMaxX-Simulation.trainMinX)+1.1*Simulation.trainMinX;
+//		        	double xFrom = Math.random()*(0.9*8-Simulation.trainMinX)+1.1*Simulation.trainMinX;
 		        	double yFrom = Math.random()*(0.9*Simulation.trainMaxY-Simulation.trainMinY)+1.1*Simulation.trainMinY;
-		        	Vehicle v = new Vehicle(xFrom, yFrom, dijkstra.findRoute(xFrom, yFrom, net.getNodes().get(10)), i);
-	//	        	Vehicle v = new Vehicle(xFrom, yFrom, dijkstra.findRoute(xFrom, yFrom, true), i);
+//		        	Vehicle v = new Vehicle(xFrom, yFrom, dijkstra.findRoute(xFrom, yFrom, net.getNodes().get(10)), i, true);
+		        	Vehicle v = new Vehicle(xFrom, yFrom, dijkstra.findRoute(xFrom, yFrom, true), i, true);
 		        	v.setIsInside(true);
-		        	v.setLeaving(true);
-		        	v.setSpeed(speed);
 		        	sim.add(v);
 		        }
 		        for (int i = 1 ; i <= pEnter; i++){
 		        	double xFrom = Math.random()*(0.9*Simulation.trainMaxX-Simulation.trainMinX)+1.1*Simulation.trainMinX;
+//		        	double xFrom = Math.random()*(0.9*8-Simulation.trainMinX)+1.1*Simulation.trainMinX;
 		        	double yFrom = Math.random()*(0.9*Simulation.trainMinY);
-		        	Vehicle v = new Vehicle(xFrom, yFrom, dijkstra.findRoute(xFrom, yFrom, false), 1000+i);
+//		        	Vehicle v = new Vehicle(xFrom, yFrom, dijkstra.findRoute(xFrom, yFrom, net.getNodes().get(14)), 1000+i, false);
+		        	Vehicle v = new Vehicle(xFrom, yFrom, dijkstra.findRoute(xFrom, yFrom, false), 1000+i, false);
 		        	v.setIsInside(false);
-		        	v.setLeaving(false);
 		        	sim.add(v);
 		        }
 		        
-		        String result = sim.run(run, pEnter, pLeave, speed);
+		        String result = sim.run(run, pEnter, pLeave);
 		        System.out.println(result);
 		        
-		        bw.newLine();
-		        bw.write(result);
-	        }
+//		        bw.newLine();
+//		        bw.write(result);
+//	        }
+//	        bw.flush();
     	}
-        
-        bw.close();
-        fw.close();
+//        
+//        bw.close();
+//        fw.close();
         
         System.out.println("output written to: " + FILENAME);
         
     }
 
-	private String run(int run, int pEnter, int pLeave, double speed) {
+	private String run(int run, int pEnter, int pLeave) {
     	
     	double time = 0;
-        double maxTime = 60;
-        Count count = new Count(run, pEnter, pLeave, speed);
+        double maxTime = 100;
+        Count count = new Count(run, pEnter, pLeave);
         
         while (time < maxTime) {
         	
@@ -151,6 +152,12 @@ public class Simulation {
     			count.setDoorsOpeningTime(time);
     			System.out.println("doors open at: " + time);
         	} 	        	
+        	
+//        	for (Vehicle v : Simulation.vehs){
+//        		if(!v.isLeaving()){
+//        			v.checkFreePath(vehs);
+//        		}
+//        	}
         	
             for (Vehicle v : Simulation.vehs) {
                 v.update(Simulation.vehs);
@@ -174,10 +181,10 @@ public class Simulation {
             //
             List<VehicleInfo> vInfos = new ArrayList<>();
             for (Vehicle v : Simulation.vehs) {
-                VehicleInfo vi = new VehicleInfo(v.getX(), v.getY(), v.getR(), v.getId(), v.getViewX(), v.getViewY(), v.getViewR());
+                VehicleInfo vi = new VehicleInfo(v.getX(), v.getY(), v.getR(), v.getId(), v.getViewX(), v.getViewY(), v.getViewR(), v.isLeaving());
                 vInfos.add(vi);
             }
-//            this.vis.update(time, vInfos);
+            this.vis.update(time, vInfos);
 
             time += H;
             this.time = time;

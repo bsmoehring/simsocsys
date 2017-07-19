@@ -90,9 +90,9 @@ public class Vehicle extends HasCoords{
 	        dx /= dist;
 	        dy /= dist;
 	        
-//	        if (!this.leaving){
-//	        	checkFreePath(vehs, dx, dy);
-//	        }
+	        if (!this.leaving){
+	        	checkFreePath(vehs);
+	        }
 	        this.dx = dx;
 	        this.dy = dy;
 	        	
@@ -174,10 +174,10 @@ public class Vehicle extends HasCoords{
 		    		if(d<this.viewR){
 		    			if(v.leaving){
 		    				setWaiting = true;
-		    				System.out.println("leaving " + d);
+//		    				System.out.println("leaving " + d);
 		    			} else if (v.waiting){
 		    				setWaiting = true;
-		    				System.out.println("waiting " + d);
+//		    				System.out.println("waiting " + d);
 		    			}
 		    		}
 	    		}
@@ -190,9 +190,7 @@ public class Vehicle extends HasCoords{
 //    		System.out.println(v.getId() + " is in the way of " + this.getId());
 			this.waiting = true;
 			this.speed = Simulation.waitingSpeed;
-    	} else if (!setWaiting 
-//    			&& this.waiting
-    			){
+    	} else if (!setWaiting && this.waiting){
     		this.waiting = false;
 			this.speed = Simulation.SPEED;
     	}
