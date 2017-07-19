@@ -17,13 +17,10 @@ public class Count {
 	private double firstEnteringTime;
 	private double lastEnteringTime;
 	
-	private double speed;
-	
-	public Count(int run, int pEnter, int pLeave, double speed){
+	public Count(int run, int pEnter, int pLeave){
 		this.run = run;
 		this.pEnter = pEnter;
 		this. pLeave = pLeave;
-		this.speed = speed;
 	}
 	
 	public int getRun(){
@@ -107,7 +104,7 @@ public class Count {
 	public String getResult() {
 		double leavingTime = (lastLeavingTime-firstLeavingTime);
 		double enteringTime = (lastEnteringTime - firstEnteringTime);
-		String result = getRun() + ";" + getPEnter() + ";" + getPLeave() + ";" + this.speed + ";" + getDoorsOpeningTime() + ";" 
+		String result = getRun() + ";" + Simulation.viewR + ";" + getPEnter() + ";" + getPLeave() + ";" + getDoorsOpeningTime() + ";" 
 				+ firstLeavingTime + ";" + lastLeavingTime + ";" + leavingTime + ";" + (leavingTime/pLeave) + ";" +  
 				+ firstEnteringTime + ";" + lastEnteringTime + ";" + enteringTime + ";" + (enteringTime/pEnter) + ";";
 		return result;
