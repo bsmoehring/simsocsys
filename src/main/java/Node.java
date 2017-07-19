@@ -20,7 +20,7 @@ public class Node extends HasCoords{
 
 	public Node(double x, double y, int id) {
    		this.x = x;
-   		this.y = y;
+   		this.y = y+3;
    		this.id = id;
    	}
 	

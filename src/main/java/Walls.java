@@ -37,7 +37,7 @@ public class Walls {
    	
    	public Wall createWall(double xFrom, double yFrom, double xTo, double yTo, boolean door, int id){
    		
-   		Wall w = new Wall( xFrom, yFrom, xTo, yTo, door, id);
+   		Wall w = new Wall( xFrom, yFrom+3, xTo, yTo+3, door, id);
    		this.walls.put(id, w);
    		return w;
    	}
