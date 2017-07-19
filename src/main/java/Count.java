@@ -104,7 +104,7 @@ public class Count {
 	public String getResult() {
 		double leavingTime = (lastLeavingTime-firstLeavingTime);
 		double enteringTime = (lastEnteringTime - firstEnteringTime);
-		String result = getRun() + ";" + Simulation.viewR + ";" + getPEnter() + ";" + getPLeave() + ";" + getDoorsOpeningTime() + ";" 
+		String result = getRun() + ";" + Simulation.waitingSpeed + ";" + getPEnter() + ";" + getPLeave() + ";" + getDoorsOpeningTime() + ";" 
 				+ firstLeavingTime + ";" + lastLeavingTime + ";" + leavingTime + ";" + (leavingTime/pLeave) + ";" +  
 				+ firstEnteringTime + ";" + lastEnteringTime + ";" + enteringTime + ";" + (enteringTime/pEnter) + ";";
 		return result;

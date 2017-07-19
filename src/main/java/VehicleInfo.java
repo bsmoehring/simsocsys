@@ -58,11 +58,11 @@ public class VehicleInfo {
     public void draw(PApplet p) {
         
         
-//        p.pushMatrix();
-//        p.translate(viewX, viewY);
-//        p.fill((float)(255), (float)(255), (float)(255), (float)(0));
-//        p.ellipse(0, 0, this.viewR*2, this.viewR*2);
-//        p.popMatrix();
+        p.pushMatrix();
+        p.translate(viewX, viewY);
+        p.fill((float)(255), (float)(255), (float)(255), (float)(0));
+        p.ellipse(0, 0, this.viewR, this.viewR);
+        p.popMatrix();
     	
     	p.pushMatrix();
         p.translate(x, y);

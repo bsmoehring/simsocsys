@@ -9,6 +9,9 @@ public class Walls {
 	
 	public Walls(){
 		
+		createWall(00.35, 1.00, -9.99, 1.00, false, 98); 
+		createWall(24.31, 1.00, 99.99, 1.00, false, 99); 
+		
         createWall(00.35, 1.00, 00.35, 3.30, false, 0);
 
 		createWall(00.35, 1.00, 01.88, 1.00, false, 1); 
@@ -96,7 +99,7 @@ public class Walls {
 		double maxX = Double.NEGATIVE_INFINITY;
 		double maxY = Double.NEGATIVE_INFINITY;
 		for(Wall w : this.walls.values()){
-			if(!w.isDoor()){
+			if(!w.isDoor() && w.getId()!=98 && w.getId()!=99){
 				if(w.getxFrom()<minX)	minX = w.getxFrom();
 				if(w.getxTo()<minX)		minX = w.getxTo();
 				if(w.getxFrom()>maxX)	maxX = w.getxFrom();

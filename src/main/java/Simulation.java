@@ -42,7 +42,7 @@ public class Simulation {
     public static final double KAPPA = 240000;
 	
     public static final double SPEED = 1.25;
-    public static double waitingSpeed = 0.3;
+    public static double waitingSpeed = 0.1;
     
     public static double viewR;
     
@@ -51,7 +51,7 @@ public class Simulation {
 	public static double trainMinY;
 	public static double trainMaxY;
 	
-    private static Vis vis;
+//    private static Vis vis;
     private static List<Vehicle> vehs;
     public static Network net;
     public static Walls walls;
@@ -62,7 +62,7 @@ public class Simulation {
     public Simulation(Network net, Walls walls) {
     	Simulation.walls = walls;
         Simulation.net = net;
-    	this.vis = new Vis(net, walls);
+//    	this.vis = new Vis(net, walls);
     	Simulation.vehs = new ArrayList<>();
         
     }
@@ -74,22 +74,23 @@ public class Simulation {
         FileWriter fw = null;
         BufferedWriter bw = null;
         
-//		fw = new FileWriter(FILENAME);
-//	    bw = new BufferedWriter(fw);
-//	    bw.write("Run;" + "viewR;" + "pEnter;" + "pLeave;" + "DoorsOpening;" 
-//	    		+ "FirstLeaving;" + "LastLeaving;" + "LeaveTime;" + "Sec/Pers;" 
-//	    		+ "FirstEntering;" + "LastEntering;" + "EnterTime;" + "Sec/Pers;");
+		fw = new FileWriter(FILENAME);
+	    bw = new BufferedWriter(fw);
+	    bw.write("Run;" + "waitingSpeed;" + "pEnter;" + "pLeave;" + "DoorsOpening;" 
+	    		+ "FirstLeaving;" + "LastLeaving;" + "LeaveTime;" + "Sec/Pers;" 
+	    		+ "FirstEntering;" + "LastEntering;" + "EnterTime;" + "Sec/Pers;");
 //		bw.write("Radius;"+"Länge;"+"Vehs;");
         
 	    int run = 1;
-        int pLeave = 20;
-        int pEnter = 20;
+        int pLeave = 34;
+        int pEnter = 34;
         
         for (int j = 1 ; j<=10 ; j++){
-        	pLeave ++;
-        	pEnter ++;
+//        	pLeave ++;
+//        	pEnter ++;
         	Simulation.viewR = 3.0;
-//	        for (run = 1; run <= 30; run++){
+        	Simulation.waitingSpeed = 0.05 + 0.05*j; 
+	        for (run = 1; run <= 5; run++){
         	
 //	        	Simulation.viewR += 0.1;
 //    			pLeave += 2;
@@ -121,14 +122,14 @@ public class Simulation {
 		        String result = sim.run(run, pEnter, pLeave);
 		        System.out.println(result);
 		        
-//		        bw.newLine();
-//		        bw.write(result);
-//	        }
+		        bw.newLine();
+		        bw.write(result);
+	        }
 //	        bw.flush();
     	}
-//        
-//        bw.close();
-//        fw.close();
+        
+        bw.close();
+        fw.close();
         
         System.out.println("output written to: " + FILENAME);
         
@@ -184,7 +185,7 @@ public class Simulation {
                 VehicleInfo vi = new VehicleInfo(v.getX(), v.getY(), v.getR(), v.getId(), v.getViewX(), v.getViewY(), v.getViewR(), v.isLeaving());
                 vInfos.add(vi);
             }
-            this.vis.update(time, vInfos);
+//            this.vis.update(time, vInfos);
 
             time += H;
             this.time = time;
