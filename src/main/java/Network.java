@@ -137,8 +137,8 @@ public class Network {
         Link l92_rev= createLink	(n18 ,n17, 52, 1);
         Link l93 	= createLink	(n15, n13, 49, 1);
         Link l93_rev= createLink	(n13 ,n15, 50, 1);
-//        Link l94 	= createLink	(n15, n16, 51, 1);
-//        Link l94_rev= createLink	(n16 ,n15, 52, 1);
+        Link l94 	= createLink	(n15, n16, 51, 1);
+        Link l94_rev= createLink	(n16 ,n15, 52, 1);
         Link l95 	= createLink	(n412, n16, 51, 1);
         Link l95_rev= createLink	(n16 ,n412, 52, 1);
 
