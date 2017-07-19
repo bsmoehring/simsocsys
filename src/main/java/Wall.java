@@ -7,7 +7,7 @@ public class Wall {
 	private final double xTo;
 	private final double yTo;
 	private final boolean door;
-	private boolean open = false;
+	private boolean open;
 	
 	public Wall(double xFrom, double yFrom, double xTo, double yTo, boolean door, int id){
 		this.xFrom=xFrom;
@@ -16,6 +16,7 @@ public class Wall {
 		this.yTo=yTo;
 		this.id=id;
 		this.door=door;
+		this.open = false;
 	}
 	
 	public double getxFrom() {
@@ -43,8 +44,8 @@ public class Wall {
 		return open;
 	}
 	
-	public void setOpen(boolean o){
-		this.open = o;
+	public void setOpen(boolean open){
+		this.open = open;
 	}
 
 	

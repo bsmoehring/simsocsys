@@ -8,8 +8,8 @@ public class Count {
 	private int pEnter = 0;
 	private int pLeave = 0;
 	
-	private double doorsOpeningTime;
-	private double doorsClosingTime;
+	private double doorsOpeningTime=0.;
+	private double doorsClosingTime=0.;
 	private double pLeft = 0;
 	private double pEntered = 0;
 	private double firstLeavingTime;
@@ -45,10 +45,11 @@ public class Count {
 	public void setDoorsClosingTime(double time){
 		this.doorsClosingTime = time;
 	}
-	public void checkPositions(List<Vehicle> vehs, double time) {
-
+	public boolean checkPositions(List<Vehicle> vehs, double time) {
+		boolean allLeft = true;
 		for (Vehicle v : vehs){
 			boolean isInside = checkInside(v);
+			if (isInside&&v.isLeaving()) allLeft = false;
 			boolean wasInside = v.isInside();
 			if(isInside == wasInside){
 				// vehicle is where it was before -> same position
@@ -75,7 +76,7 @@ public class Count {
 //				System.out.println(time + " " + v.getId() + " left.");
 			}
 		}
-
+		return allLeft;
 		
 //		if (Counts.pLeft >= Counts.leaving){
 //			for (Vehicle v : vehs){
@@ -104,9 +105,15 @@ public class Count {
 	public String getResult() {
 		double leavingTime = (lastLeavingTime-firstLeavingTime);
 		double enteringTime = (lastEnteringTime - firstEnteringTime);
-		String result = getRun() + ";" + Simulation.waitingSpeed + ";" + getPEnter() + ";" + getPLeave() + ";" + getDoorsOpeningTime() + ";" 
+		double t;
+		if (lastEnteringTime > lastLeavingTime){
+			t = lastEnteringTime-doorsOpeningTime;
+		} else {
+			t = lastLeavingTime - doorsOpeningTime;
+		}
+		String result = getRun() + ";" + Simulation.SPEED + ";" + getPEnter() + ";" + getPLeave() + ";" + getDoorsOpeningTime() + ";" 
 				+ firstLeavingTime + ";" + lastLeavingTime + ";" + leavingTime + ";" + (leavingTime/pLeave) + ";" +  
-				+ firstEnteringTime + ";" + lastEnteringTime + ";" + enteringTime + ";" + (enteringTime/pEnter) + ";";
+				+ firstEnteringTime + ";" + lastEnteringTime + ";" + enteringTime + ";" + (enteringTime/pEnter) + ";" + t + ";";
 		return result;
 	}
 //	public String getResult(){

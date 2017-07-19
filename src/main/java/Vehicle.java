@@ -32,7 +32,7 @@ public class Vehicle extends HasCoords{
     private final int id;
     private double vx = 0;
     private double vy = 0;
-    private double speed = Simulation.SPEED;
+    private double speed ;
     private double maxSpeed = 2.0;
     private double currentSpeed;
     private double tau = 0.5;
@@ -67,6 +67,7 @@ public class Vehicle extends HasCoords{
     	this.x = x;
         this.y = y;
         this.route = route;
+        this.speed = Simulation.SPEED;
         this.buffer = new LinkedList<Double>();
         this.bufferSize = (int)(Math.round(1/Simulation.H));
         this.leaving = leaving;
@@ -184,8 +185,7 @@ public class Vehicle extends HasCoords{
 	    	}
 //    	}
     	
-    	if(setWaiting 
-//    			&& !this.waiting
+    	if(setWaiting && !this.waiting
     			){
 //    		System.out.println(v.getId() + " is in the way of " + this.getId());
 			this.waiting = true;

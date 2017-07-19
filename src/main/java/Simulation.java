@@ -42,9 +42,9 @@ public class Simulation {
     public static final double KAPPA = 240000;
 	
     public static final double SPEED = 1.25;
-    public static double waitingSpeed = 0.1;
+    public static final double waitingSpeed = 0.3;
     
-    public static double viewR;
+    public static double viewR = 3.0;
     
 	public static double trainMinX;
 	public static double trainMaxX;
@@ -56,6 +56,7 @@ public class Simulation {
     public static Network net;
     public static Walls walls;
     public boolean doorsOpen = false;
+    public boolean wallsOpen = false;
     
     public static double time = 0;
 
@@ -76,9 +77,9 @@ public class Simulation {
         
 		fw = new FileWriter(FILENAME);
 	    bw = new BufferedWriter(fw);
-	    bw.write("Run;" + "waitingSpeed;" + "pEnter;" + "pLeave;" + "DoorsOpening;" 
+	    bw.write("Run;" + "Speed;" + "pEnter;" + "pLeave;" + "DoorsOpening;" 
 	    		+ "FirstLeaving;" + "LastLeaving;" + "LeaveTime;" + "Sec/Pers;" 
-	    		+ "FirstEntering;" + "LastEntering;" + "EnterTime;" + "Sec/Pers;");
+	    		+ "FirstEntering;" + "LastEntering;" + "EnterTime;" + "Sec/Pers;" + "PassengerExchangeTime;");
 //		bw.write("Radius;"+"Länge;"+"Vehs;");
         
 	    int run = 1;
@@ -86,14 +87,7 @@ public class Simulation {
         int pEnter = 34;
         
         for (int j = 1 ; j<=10 ; j++){
-//        	pLeave ++;
-//        	pEnter ++;
-        	Simulation.viewR = 3.0;
-        	Simulation.waitingSpeed = 0.05 + 0.05*j; 
-	        for (run = 1; run <= 5; run++){
-        	
-//	        	Simulation.viewR += 0.1;
-//    			pLeave += 2;
+//	        for (run = 1; run <= 5; run++){
         	
 	            Walls walls = new Walls();
 	            walls.getBoundaries();
@@ -124,7 +118,7 @@ public class Simulation {
 		        
 		        bw.newLine();
 		        bw.write(result);
-	        }
+//	        }
 //	        bw.flush();
     	}
         
@@ -143,7 +137,7 @@ public class Simulation {
         
         while (time < maxTime) {
         	
-        	if (time > 10 && !doorsOpen) {
+        	if (time > 5 && !this.doorsOpen) {
         		for (Wall w : Simulation.walls.getWalls().values()){
         			if (w.isDoor()){
         				w.setOpen(true);
@@ -154,16 +148,17 @@ public class Simulation {
     			System.out.println("doors open at: " + time);
         	} 	        	
         	
-//        	for (Vehicle v : Simulation.vehs){
-//        		if(!v.isLeaving()){
-//        			v.checkFreePath(vehs);
-//        		}
-//        	}
-        	
             for (Vehicle v : Simulation.vehs) {
                 v.update(Simulation.vehs);
             }
-            count.checkPositions(Simulation.vehs, time);
+            if (count.checkPositions(Simulation.vehs, time) && !this.wallsOpen){
+            	for (Wall w : Simulation.walls.getWalls().values()){
+        			if (w.getId()>1000){
+        				w.setOpen(true);
+        			}
+    			}
+            	this.wallsOpen = true;
+            };
             
             Iterator<Vehicle> it = Simulation.vehs.iterator();
             while (it.hasNext()) {

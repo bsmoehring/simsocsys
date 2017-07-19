@@ -9,23 +9,47 @@ public class Walls {
 	
 	public Walls(){
 		
-		createWall(00.35, 1.00, -9.99, 1.00, false, 98); 
-		createWall(24.31, 1.00, 99.99, 1.00, false, 99); 
+		createWall(00.35, 1.00, -9.99, 1.00, false, 998); 
+		createWall(24.31, 1.00, 99.99, 1.00, false, 999); 
 		
         createWall(00.35, 1.00, 00.35, 3.30, false, 0);
 
 		createWall(00.35, 1.00, 01.88, 1.00, false, 1); 
 		createWall(01.88, 1.00, 03.18, 1.00, true, 101);
+		
+//		createWall(01.88, 1.00, 01.88, -1.00, false, 1001);
+//		createWall(03.18, 1.00, 03.18, -1.00, false, 1002);
+		
         createWall(03.18, 1.00, 05.80, 1.00, false, 2);
         createWall(05.80, 1.00, 07.10, 1.00, true, 102);
+        
+//        createWall(05.80, 1.00, 05.80, -1.00, false, 1003);
+//		createWall(07.10, 1.00, 07.10, -1.00, false, 1004);
+        
         createWall(07.10, 1.00, 09.72, 1.00, false, 3);
         createWall(09.72, 1.00, 11.02, 1.00, true, 103);
+        
+//        createWall(09.72, 1.00, 09.72, -1.00, false, 1005);
+//		createWall(11.02, 1.00, 11.02, -1.00, false, 1006);
+        
         createWall(11.02, 1.00, 13.64, 1.00, false, 4);
         createWall(13.54, 1.00, 14.94, 1.00, true, 104);
+        
+//        createWall(13.54, 1.00, 13.54, -1.00, false, 1007);
+//		createWall(14.94, 1.00, 14.94, -1.00, false, 1008);
+        
         createWall(14.94, 1.00, 17.56, 1.00, false, 5);
         createWall(17.56, 1.00, 18.86, 1.00, true, 105);
+        
+//        createWall(17.56, 1.00, 17.56, -1.00, false, 1009);
+//		createWall(18.86, 1.00, 18.86, -1.00, false, 1010);
+        
         createWall(18.86, 1.00, 21.48, 1.00, false, 6 );
         createWall(21.48, 1.00, 22.78, 1.00, true, 106);
+        
+//        createWall(21.48, 1.00, 21.48, -1.00, false, 1011);
+//		createWall(22.78, 1.00, 22.78, -1.00, false, 1012);
+        
         createWall(22.78, 1.00, 24.31, 1.00, false, 7 );
         
         createWall(24.31, 1.00, 24.31, 3.30, false, 10);
@@ -72,7 +96,6 @@ public class Walls {
    		return walls;
    	}
    	
-   	
    	public void createWall(double xFrom, double yFrom, double xTo, double yTo, boolean door, int id){
    		
    		Wall w = new Wall( xFrom, yFrom+3, xTo, yTo+3, door, id);
@@ -99,7 +122,7 @@ public class Walls {
 		double maxX = Double.NEGATIVE_INFINITY;
 		double maxY = Double.NEGATIVE_INFINITY;
 		for(Wall w : this.walls.values()){
-			if(!w.isDoor() && w.getId()!=98 && w.getId()!=99){
+			if(!w.isDoor() && w.getId()<900){
 				if(w.getxFrom()<minX)	minX = w.getxFrom();
 				if(w.getxTo()<minX)		minX = w.getxTo();
 				if(w.getxFrom()>maxX)	maxX = w.getxFrom();
