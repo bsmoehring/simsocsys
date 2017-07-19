@@ -32,7 +32,7 @@ public class Vehicle extends HasCoords{
     private final int id;
     private double vx = 0;
     private double vy = 0;
-    private double speed = 1.34;
+    private double speed = Simulation.SPEED;
     private double maxSpeed = 2.0;
     private double currentSpeed;
     private double tau = 0.5;
@@ -49,6 +49,9 @@ public class Vehicle extends HasCoords{
     private double y;
     private double phi = 0;//radian!!
     
+    private double dx;
+    private double dy;
+    
     private double viewX;
     private double viewY ;
 	private double viewR;
@@ -59,13 +62,14 @@ public class Vehicle extends HasCoords{
 	private LinkedList<Double> buffer;
 	private int bufferSize;
 	
-    public Vehicle(double x, double y, List<Link> route, int id) {
+    public Vehicle(double x, double y, List<Link> route, int id, boolean leaving) {
         this.id = id;
     	this.x = x;
         this.y = y;
         this.route = route;
         this.buffer = new LinkedList<Double>();
         this.bufferSize = (int)(Math.round(1/Simulation.H));
+        this.leaving = leaving;
 //        System.out.println("bufferSize: " + this.bufferSize);
     }
 
@@ -86,8 +90,12 @@ public class Vehicle extends HasCoords{
 	        dx /= dist;
 	        dy /= dist;
 	        
-	        checkFreePath(vehs, dx, dy);
-	        
+//	        if (!this.leaving){
+//	        	checkFreePath(vehs, dx, dy);
+//	        }
+	        this.dx = dx;
+	        this.dy = dy;
+	        	
 	        dx *= this.speed;
 	        dy *= this.speed;
 	        
@@ -121,7 +129,7 @@ public class Vehicle extends HasCoords{
         
         if (currentSpeed < this.speed/10 && calcAVGSpeed() < this.speed/10){
         	Dijkstra d = new Dijkstra();
-        	this.route = d.findRoute(this.x, this.y, Simulation.net.getNodes().get(10));
+        	this.route = d.findRoute(this.x, this.y, this.leaving);
         	this.buffer.clear();
         	this.routeIndex = 0;
 //        	System.out.println(Simulation.time + " " + this.route);
@@ -148,34 +156,45 @@ public class Vehicle extends HasCoords{
     	}
     }
     
-    private void checkFreePath(List<Vehicle> vehs, double dx, double dy) {
+    public void checkFreePath(List<Vehicle> vehs) {
 		
-    	HasCoords p = new HasCoords();
-    	p.setX(dx*this.r + this.x);
-    	p.setY(dy*this.r + this.y);
+    	boolean setWaiting = false;
     	
-    	if(!this.isLeaving()){
+    	HasCoords p = new HasCoords();
+    	p.setX(this.dx*this.r + this.x);
+    	p.setY(this.dy*this.r + this.y);
+    	
+//    	if(!this.isLeaving()){
         	this.viewX = p.getX();
         	this.viewY = p.getY();
-        	this.viewR = this.r*3;
+        	this.viewR = this.r*Simulation.viewR;
 	    	for (Vehicle v : vehs){
-	    		if((pointDistance(v ,p)<this.viewR && v.leaving)){	
-	    			System.out.println(v.getId() + " is in the way of " + this.getId());
-	    			this.setWaiting(true);
-	    			this.speed = 0.1;
-	    		} else {
-	    			this.setWaiting(false);
-	    			this.speed = 1.34;
-	    		}
-	    		if (pointDistance(v ,p)<this.viewR && v.isWaiting()){
-	    			System.out.println(v.getId() + " is waiting in front of " + this.getId());
-	    			this.setWaiting(true);
-	    			this.speed = 0.1;
-	    		} else {
-	    			this.setWaiting(false);
-	    			this.speed = 1.34;
+	    		if(!v.equals(this)){
+		    		double d = pointDistance(v ,p);
+		    		if(d<this.viewR){
+		    			if(v.leaving){
+		    				setWaiting = true;
+		    				System.out.println("leaving " + d);
+		    			} else if (v.waiting){
+		    				setWaiting = true;
+		    				System.out.println("waiting " + d);
+		    			}
+		    		}
 	    		}
 	    	}
+//    	}
+    	
+    	if(setWaiting 
+//    			&& !this.waiting
+    			){
+//    		System.out.println(v.getId() + " is in the way of " + this.getId());
+			this.waiting = true;
+			this.speed = Simulation.waitingSpeed;
+    	} else if (!setWaiting 
+//    			&& this.waiting
+    			){
+    		this.waiting = false;
+			this.speed = Simulation.SPEED;
     	}
 	}
 
@@ -395,10 +414,6 @@ public class Vehicle extends HasCoords{
 
 	public boolean isLeaving() {
 		return this.leaving;
-	}
-
-	public void setLeaving(boolean leaving) {
-		this.leaving = leaving;
 	}
 
 	public double getViewX() {
