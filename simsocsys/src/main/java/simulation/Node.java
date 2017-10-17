@@ -1,3 +1,4 @@
+package simulation;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -7,6 +8,7 @@ import java.util.List;
 public class Node extends HasCoords{
     private final double x;
    	private final double y;
+   	private final int level;
    	private final int id;
 
    	private final List<Link> outLinks = new LinkedList<Link>();
@@ -21,6 +23,14 @@ public class Node extends HasCoords{
 	public Node(double x, double y, int id) {
    		this.x = x;
    		this.y = y;
+   		this.level = 0;
+   		this.id = id;
+   	}
+	
+	public Node(double x, double y, int level, int id) {
+   		this.x = x;
+   		this.y = y;
+   		this.level = level;
    		this.id = id;
    	}
 	
