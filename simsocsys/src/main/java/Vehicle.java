@@ -19,8 +19,7 @@
  * *********************************************************************** */
 
 
-import java.text.DecimalFormat;
-import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 import processing.core.PVector;
@@ -30,32 +29,48 @@ import processing.core.PVector;
  */
 public class Vehicle extends HasCoords{
 
-
-    private final List<Link> route;
     private final int id;
     private double vx = 0;
     private double vy = 0;
-    private double speed;
+    private double speed = Simulation.SPEED;
+    private double maxSpeed = 2.0;
+    private double currentSpeed;
     private double tau = 0.5;
     private double weight = 80.0;
+    private boolean inside;
+    private boolean leaving;
     private boolean waiting = false;
-    private boolean entering;
-
+    
+    
 	//    abstoﬂende Kr‰fte
-    private double r = 0.3;
+    private double r = 0.25;
 
 	private double x;
     private double y;
     private double phi = 0;//radian!!
+    
+    private double dx;
+    private double dy;
+    
+    private double viewX;
+    private double viewY ;
+	private double viewR;
 
-
-    private int routeIndex = 0;
-
-    public Vehicle(double x, double y, List<Link> route, int id) {
+	private List<Link> route;
+	private int routeIndex = 0;
+	
+	private LinkedList<Double> buffer;
+	private int bufferSize;
+	
+    public Vehicle(double x, double y, List<Link> route, int id, boolean leaving) {
         this.id = id;
     	this.x = x;
         this.y = y;
         this.route = route;
+        this.buffer = new LinkedList<Double>();
+        this.bufferSize = (int)(Math.round(1/Simulation.H));
+        this.leaving = leaving;
+//        System.out.println("bufferSize: " + this.bufferSize);
     }
 
     public void update(List<Vehicle> vehs) {
@@ -63,17 +78,11 @@ public class Vehicle extends HasCoords{
     	double dx = 0;
     	double dy = 0;
     	
-    	if (this.waiting){
-    		this.speed = 0.1;
-    	} else {
-    		this.speed = 1.34;
-    	}
-    	
     	if (route != null){
 	    	
 	    	Link currentLink;
 	    	currentLink = route.get(this.routeIndex);
-	
+	    	
 	        dx = currentLink.getTo().getX() - this.x;
 	        dy = currentLink.getTo().getY() - this.y;
 	
@@ -81,6 +90,12 @@ public class Vehicle extends HasCoords{
 	        dx /= dist;
 	        dy /= dist;
 	        
+	        if (!this.leaving){
+	        	checkFreePath(vehs);
+	        }
+	        this.dx = dx;
+	        this.dy = dy;
+	        	
 	        dx *= this.speed;
 	        dy *= this.speed;
 	        
@@ -88,35 +103,100 @@ public class Vehicle extends HasCoords{
 	        dy -= vy;
     	}
         
-        Force repellingForceAgents = new Force();
-        repellingForceAgents = repellingForceAgents(vehs);
+        PVector repellingForceAgents = repellingForceAgents(vehs);
+        PVector repellingForceWalls = repellingForceWalls();
         
-        Force repellingForceWalls = new Force();
-        repellingForceWalls = repellingForceWalls();
-        
-        double fx = (this.weight * dx / this.tau) + repellingForceAgents.getFx()/4 + repellingForceWalls.getFx()/2;
-        double fy = (this.weight * dy / this.tau) + repellingForceAgents.getFy()/4 + repellingForceWalls.getFy()/2;
+        double fx = (this.weight * dx / this.tau) + repellingForceAgents.x + repellingForceWalls.x;
+        double fy = (this.weight * dy / this.tau) + repellingForceAgents.y + repellingForceWalls.y;
 
-        double ax = fx / this.weight;
-        double ay = fy / this.weight;
+        fx /= this.weight;
+        fy /= this.weight;
         
-        this.vx += ax * Simulation.H;
-        this.vy += ay * Simulation.H;
+        this.vx += fx * Simulation.H;
+        this.vy += fy * Simulation.H;
 
         //TODO: geschwindigkeit limitieren
-    	if(Math.sqrt(this.vx*this.vx+this.vy*this.vy)>this.speed){
-    		double v = Math.abs(this.vx+this.vy);
-    		this.vx = (this.vx/v)*this.speed;
-    		this.vy = (this.vy/v)*this.speed;
+    	double s = Math.sqrt(this.vx*this.vx+this.vy*this.vy);
+        if(s >this.maxSpeed){
+    		double v = Math.abs(this.vx)+Math.abs(this.vy);
+    		this.vx = (this.vx/v)*this.maxSpeed;
+    		this.vy = (this.vy/v)*this.maxSpeed;
     	}
-    
         this.phi = Math.atan2(this.vy,this.vx);
-
+        
+        this.currentSpeed = Math.sqrt(this.vx*this.vx+this.vy*this.vy);
+        addSpeed(this.currentSpeed);
+        
+        if (currentSpeed < this.speed/10 && calcAVGSpeed() < this.speed/10){
+        	Dijkstra d = new Dijkstra();
+        	this.route = d.findRoute(this.x, this.y, this.leaving);
+        	this.buffer.clear();
+        	this.routeIndex = 0;
+//        	System.out.println(Simulation.time + " " + this.route);
+        }
     }
     
-    public Force repellingForceAgents(List<Vehicle> vehs){
+    private void addSpeed(Double s){
+
+        this.buffer.add(this.currentSpeed);
+        if (this.buffer.size() > this.bufferSize) {
+            this.buffer.remove();
+        }
+    }
+    
+    private double calcAVGSpeed(){
+    	if(buffer.size() == this.bufferSize){
+	    	double accumulatedSpeed = 0;
+	        for (double Speed : this.buffer) {
+	                     accumulatedSpeed += Speed;           
+	        }
+	        return accumulatedSpeed / this.buffer.size();
+    	} else {
+    		return this.speed;
+    	}
+    }
+    
+    public void checkFreePath(List<Vehicle> vehs) {
+		
+    	boolean setWaiting = false;
     	
-    	Force force = new Force();
+    	HasCoords p = new HasCoords();
+    	p.setX(this.dx*this.r + this.x);
+    	p.setY(this.dy*this.r + this.y);
+    	
+//    	if(!this.isLeaving()){
+        	this.viewX = p.getX();
+        	this.viewY = p.getY();
+        	this.viewR = this.r*Simulation.viewR;
+	    	for (Vehicle v : vehs){
+	    		if(!v.equals(this)){
+		    		double d = pointDistance(v ,p);
+		    		if(d<this.viewR){
+		    			if(v.leaving){
+		    				setWaiting = true;
+//		    				System.out.println("leaving " + d);
+		    			} else if (v.waiting){
+		    				setWaiting = true;
+//		    				System.out.println("waiting " + d);
+		    			}
+		    		}
+	    		}
+	    	}
+//    	}
+    	
+    	if(setWaiting 
+//    			&& !this.waiting
+    			){
+//    		System.out.println(v.getId() + " is in the way of " + this.getId());
+			this.waiting = true;
+			this.speed = Simulation.waitingSpeed;
+    	} else if (!setWaiting && this.waiting){
+    		this.waiting = false;
+			this.speed = Simulation.SPEED;
+    	}
+	}
+
+	public PVector repellingForceAgents(List<Vehicle> vehs){
     	
     	double fx = 0;
     	double fy = 0;
@@ -125,7 +205,7 @@ public class Vehicle extends HasCoords{
     		
     		if ( veh != this){
     			    			
-    			double dist =  pointDistance(veh);
+    			double dist =  pointDistance(veh, this);
     			double distR = (this.r + veh.r - dist);
     			
     			double f = Simulation.A * Math.pow(Math.E, (distR/Simulation.B));
@@ -161,17 +241,16 @@ public class Vehicle extends HasCoords{
     		
     	}
     	
-    	force.setFx(fx);
-    	force.setFy(fy);
+    	PVector force = new PVector((float)(fx), (float)(fy));
     	
     	return force;
     	
     }
     
-    public double pointDistance(HasCoords v1){
+    public double pointDistance(HasCoords v1, HasCoords v2){
     	
-        double dx = v1.getX() - this.x;
-        double dy = v1.getY() - this.y;
+        double dx = v1.getX() - v2.getX();
+        double dy = v1.getY() - v2.getY();
 
         double dist = Math.sqrt(dx*dx+dy*dy);
     	
@@ -179,9 +258,9 @@ public class Vehicle extends HasCoords{
     	
     }
     
-    public Force repellingForceWalls(){
+    public PVector repellingForceWalls(){
     	
-    	Force force 	= new Force(0, 0);
+    	PVector force 	= new PVector(0, 0);
     	
     	PVector veh 	= new PVector((float)this.x, (float) this.y);
     	
@@ -193,8 +272,6 @@ public class Vehicle extends HasCoords{
 	    		PVector wTo 	= new PVector((float)wall.getxTo(), (float) wall.getyTo());
 	    		PVector closest = new PVector();    		
 	    		
-	    		double distance ;
-	    		
 				float vx = veh.x-wFrom.x; 
 				float vy = veh.y-wFrom.y;   // v = wFrom->veh
 				float ux = wTo.x-wFrom.x;
@@ -202,19 +279,22 @@ public class Vehicle extends HasCoords{
 				float det = vx*ux + vy*uy; 
 				float len = ux*ux + uy*uy;    // len = u^2
 				
+				boolean endpoint = false;
 				if (det <= 0){ 	// its outside the line segment near wFrom
 				  closest.set(wFrom); 
+				  endpoint = true;
 				} else if (det >= len){ // its outside the line segment near wTo
 				  closest.set(wTo);  
+				  endpoint = true;
 				} else {// its near line segment between wFrom and wTo
 					float ex = (float) (ux / Math.sqrt(len));    	// e = u / |u^2|
 					float ey = (float) (uy / Math.sqrt(len));
 					float f = ex * vx + ey * vy;  					// f = e . v
 					closest.set(wFrom.x + f * ex, wFrom.y + f * ey);           				// S = wFrom + f * e
 				}
-				distance = Math.sqrt(Math.pow(closest.x-veh.x, 2) + Math.pow(closest.y-veh.y, 2));
-				DecimalFormat df = new DecimalFormat("#.##");
-	//	    	System.out.println(this.getId() + " " + wall.getId() + " " + df.format(distance) + " " + closest.x + " " + closest.y);
+				double distance = Math.sqrt(Math.pow(closest.x-veh.x, 2) + Math.pow(closest.y-veh.y, 2));
+//				DecimalFormat df = new DecimalFormat("#.##");
+//		    	System.out.println(this.getId() + " " + wall.getId() + " " + df.format(distance) + " " + closest.x + " " + closest.y);
 				double distR = this.r - distance;
 				double dx = (veh.x - closest.x) / distance;
 				double dy = (veh.y - closest.y) / distance;
@@ -222,18 +302,24 @@ public class Vehicle extends HasCoords{
 				if (distance <= this.r) {
 					f = f + (Simulation.K * distR);
 				}
-	
-				double fx = f * (dx);
-				double fy = f * (dy);
+				
+				PVector ff = new PVector((float)(f * dx), (float)(f * dy));
+//				double fx = f * (dx);
+//				double fy = f * (dy);
 				if (distance <= this.r) {
 					double tx = -dy;
 					double ty = dx; 
-					fx = fx - Simulation.KAPPA * distR * this.vx * tx * tx;
-					fy = fy - Simulation.KAPPA * distR * this.vy * ty * ty;
+					ff.add((float)(- Simulation.KAPPA * distR * this.vx * tx * tx ),
+							(float)(- Simulation.KAPPA * distR * this.vy * ty * ty), 0);
+				}
+				if (endpoint){
+					ff.div(20);
 				}
 				
-				force.setFx(force.getFx()+fx);
-				force.setFy(force.getFy()+fy);
+				force.add(ff);
+				
+//				force.setFx(force.getFx()+fx);
+//				force.setFy(force.getFy()+fy);
     		}
     	}	    	
     	
@@ -246,10 +332,10 @@ public class Vehicle extends HasCoords{
 
         if (this.route != null){
 	        Link currentLink = this.route.get(this.routeIndex);
-	        
 	        if (currentLink.hasVehicleReachedEndOfLink(this) 
-	        		//possible way to ease destination mistakes by focusing on a node in a wrong direction
-	        		|| pointDistance(this.route.get(this.routeIndex).getTo()) < this.r
+//	        		possible way to ease destination mistakes by focusing on a node in a wrong direction
+	        		|| 
+	        		pointDistance(this.route.get(this.routeIndex).getTo(), this) < this.r*3
 	        		) {
 	            this.routeIndex++;
 	            if (this.routeIndex == this.route.size() ){
@@ -261,7 +347,7 @@ public class Vehicle extends HasCoords{
     }
 
     public double getX() {
-        return x;
+        return this.x;
     }
     
     public void setX(double x){
@@ -273,40 +359,27 @@ public class Vehicle extends HasCoords{
     }
 
     public double getY() {
-        return y;
+        return this.y;
     }
     
     public double getVX() {
-        return vx;
+        return this.vx;
     }
 
     public double getVY() {
-        return vy;
+        return this.vy;
     }
 
     public double getPhi() {
-        return phi;
+        return this.phi;
     }
 
 	public int getId() {
-		return id;
-	}
-
-	public boolean isWaiting() {
-		
-		return this.waiting;
-	}
-    
-    public boolean isEntering() {
-		return entering;
-	}
-
-	public void setEntering(boolean entering) {
-		this.entering = entering;
+		return this.id;
 	}
     
     public double getR() {
-		return r;
+		return this.r;
 	}
 
 	public void setR(double r) {
@@ -314,16 +387,13 @@ public class Vehicle extends HasCoords{
 	}
 
 	public double getSpeed() {
-		return speed;
+		return this.speed;
 	}
 
 	public void setSpeed(double speed) {
 		this.speed = speed;
 	}
 
-	public void setWaiting(boolean waiting) {
-		this.waiting = waiting;
-	}
 	public boolean hasRoute(){
 		if(this.route != null){
 			return true;
@@ -331,4 +401,45 @@ public class Vehicle extends HasCoords{
 			return false;
 		}
 	}
+
+	public boolean isInside() {
+		return this.inside;
+	}
+	
+	public void setIsInside(boolean isInside){
+		this.inside = isInside;
+	}
+
+	public boolean isLeaving() {
+		return this.leaving;
+	}
+
+	public double getViewX() {
+		return this.viewX;
+	}
+
+	public void setViewX(double viewX) {
+		this.viewX = viewX;
+	}
+
+	public double getViewY() {
+		return this.viewY;
+	}
+
+	public void setViewY(double viewY) {
+		this.viewY = viewY;
+	}
+
+	public double getViewR() {
+		return this.viewR;
+	}
+
+	public boolean isWaiting() {
+		return this.waiting;
+	}
+
+	public void setWaiting(boolean freepath) {
+		this.waiting = freepath;
+	}
+	
 }

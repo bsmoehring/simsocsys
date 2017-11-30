@@ -19,17 +19,20 @@
  * *********************************************************************** */
 
 
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
 
 /**
  * Created by laemmel on 24/04/16.
  */
 public class Simulation {
-
-    public static final double SCALE = 100;
+	private static final String FILENAME = "D:/Wichtiges/TUBerlin/SS17/SimulationSozialerSysteme/output/output1.csv";
+	
+    public static final double SCALE = 70;
 
     public static final double H = 0.01;
     
@@ -37,119 +40,155 @@ public class Simulation {
     public static final double B = 0.08;
     public static final double K = 120000;
     public static final double KAPPA = 240000;
-
-    private final Vis vis;
-    private static List<Vehicle> vehs = new ArrayList<>();
+	
+    public static final double SPEED = 1.25;
+    public static double waitingSpeed = 0.1;
+    
+    public static double viewR;
+    
+	public static double trainMinX;
+	public static double trainMaxX;
+	public static double trainMinY;
+	public static double trainMaxY;
+	
+    private static Vis vis;
+    private static List<Vehicle> vehs;
     public static Network net;
     public static Walls walls;
+    public boolean doorsOpen = false;
+    
+    public static double time = 0;
 
     public Simulation(Network net, Walls walls) {
     	Simulation.walls = walls;
         Simulation.net = net;
     	this.vis = new Vis(net, walls);
+    	Simulation.vehs = new ArrayList<>();
         
     }
 
-    public static void main(String[] args) {
-    	
-    	int pLeave = 2;
-    	int pEnter = 1;
-    	double minX = 0.4;
-    	double maxX = 2.5;
+    public static void main(String[] args) throws IOException {
 
         Network net = new Network();
         
-        Walls walls = new Walls();
-        Wall w1 = walls.createWall(00.35, 1.00, 01.88, 1.00, false, 1); 
-        Wall w2 = walls.createWall(03.18, 1.00, 05.80, 1.00, false, 2);
-        Wall w3 = walls.createWall(07.10, 1.00, 09.72, 1.00, false, 3);
-        Wall w4 = walls.createWall(11.02, 1.00, 12.55, 1.00, false, 4);
-        Wall w5 = walls.createWall(00.35, 3.30, 01.88, 3.30, false, 5);
-        Wall w6 = walls.createWall(03.18, 3.30, 05.80, 3.30, false, 6);
-        Wall w7 = walls.createWall(07.10, 3.30, 09.72, 3.30, false, 7);
-        Wall w8 = walls.createWall(11.02, 3.30, 12.55, 3.30, false, 8);
-        Wall w9 = walls.createWall(00.35, 1.00, 00.35, 3.30, false, 9);
- 
-        Wall d1 = walls.createWall(01.88, 1.00, 03.18, 1.00, true, 101);
-        Wall d2 = walls.createWall(01.88, 3.30, 03.18, 3.30, true, 102);
-        Wall d3 = walls.createWall(05.80, 1.00, 07.10, 1.00, true, 103);
-        Wall d4 = walls.createWall(05.80, 3.30, 07.10, 3.30, true, 104);
+        FileWriter fw = null;
+        BufferedWriter bw = null;
         
+		fw = new FileWriter(FILENAME);
+	    bw = new BufferedWriter(fw);
+	    bw.write("Run;" + "waitingSpeed;" + "pEnter;" + "pLeave;" + "DoorsOpening;" 
+	    		+ "FirstLeaving;" + "LastLeaving;" + "LeaveTime;" + "Sec/Pers;" 
+	    		+ "FirstEntering;" + "LastEntering;" + "EnterTime;" + "Sec/Pers;");
+//		bw.write("Radius;"+"Länge;"+"Vehs;");
         
-//        Rooms rooms = new Rooms();
-//        List<Link> roomLinks = new LinkedList<Link>();
-//        List<Wall> roomWalls = new LinkedList<Wall>();
-//        TODO walls and links only for specified rooms
-//        for (Link link : net.getLinks().values()){
-//        	roomLinks.add(link);
-//        }
-//        for (Wall wall : walls.getWalls().values()){
-//        	roomWalls.add(wall);
-//        }
-//        Room room = new Room(1, roomLinks, roomWalls);
-//	    rooms.addRoom(room);
-       
+	    int run = 1;
+        int pLeave = 34;
+        int pEnter = 34;
         
-        Dijkstra dijkstra = new Dijkstra();
-        Simulation sim = new Simulation(net, walls);
-//        List<Link> route3 = dijkstra.findRoute(02.53, 01.50, net.getNodes().get(7)); 
-//        List<Link> route4 = dijkstra.findRoute(03.18, 02.15, net.getNodes().get(7));
-
-        for (int i = 1 ; i <= 10; i++){
-        	double xFrom = Math.random()*maxX+minX;
-        	double yFrom = Math.random()*1.9+1.1;
-        	Vehicle v = new Vehicle(xFrom, yFrom, dijkstra.findRoute(xFrom, yFrom, 7), i);
-        	v.setWaiting(false);
-        	sim.add(v);
-        }
-//        for (int i = 1 ; i <= 10; i++){
-//        	double xFrom = Math.random()*maxX;
-//        	double yFrom = Math.random()*2+1;
-//        	Vehicle v = new Vehicle(xFrom, yFrom, null, 1000+i);
-//        	v.setWaiting(true);
-//        	sim.add(v);
-//        }
-//        Vehicle v1 = new Vehicle(0, 2.15, route3, 1);
-//        Vehicle v2 = new Vehicle(4, 2.15, route4, 2);
-//        sim.add(v1);
-//        sim.add(v2);
-        sim.run();
-
+        for (int j = 1 ; j<=10 ; j++){
+//        	pLeave ++;
+//        	pEnter ++;
+        	Simulation.viewR = 3.0;
+        	Simulation.waitingSpeed = 0.05 + 0.05*j; 
+	        for (run = 1; run <= 5; run++){
+        	
+//	        	Simulation.viewR += 0.1;
+//    			pLeave += 2;
+        	
+	            Walls walls = new Walls();
+	            walls.getBoundaries();
+		        Simulation sim = new Simulation(net, walls);
+		        Dijkstra dijkstra = new Dijkstra();
+		        		
+		    	for (int i = 1 ; i <= pLeave; i++){
+		        	double xFrom = Math.random()*(0.9*Simulation.trainMaxX-Simulation.trainMinX)+1.1*Simulation.trainMinX;
+//		        	double xFrom = Math.random()*(0.9*8-Simulation.trainMinX)+1.1*Simulation.trainMinX;
+		        	double yFrom = Math.random()*(0.9*Simulation.trainMaxY-Simulation.trainMinY)+1.1*Simulation.trainMinY;
+//		        	Vehicle v = new Vehicle(xFrom, yFrom, dijkstra.findRoute(xFrom, yFrom, net.getNodes().get(10)), i, true);
+		        	Vehicle v = new Vehicle(xFrom, yFrom, dijkstra.findRoute(xFrom, yFrom, true), i, true);
+		        	v.setIsInside(true);
+		        	sim.add(v);
+		        }
+		        for (int i = 1 ; i <= pEnter; i++){
+		        	double xFrom = Math.random()*(0.9*Simulation.trainMaxX-Simulation.trainMinX)+1.1*Simulation.trainMinX;
+//		        	double xFrom = Math.random()*(0.9*8-Simulation.trainMinX)+1.1*Simulation.trainMinX;
+		        	double yFrom = Math.random()*(0.9*Simulation.trainMinY);
+//		        	Vehicle v = new Vehicle(xFrom, yFrom, dijkstra.findRoute(xFrom, yFrom, net.getNodes().get(14)), 1000+i, false);
+		        	Vehicle v = new Vehicle(xFrom, yFrom, dijkstra.findRoute(xFrom, yFrom, false), 1000+i, false);
+		        	v.setIsInside(false);
+		        	sim.add(v);
+		        }
+		        
+		        String result = sim.run(run, pEnter, pLeave);
+		        System.out.println(result);
+		        
+		        bw.newLine();
+		        bw.write(result);
+	        }
+//	        bw.flush();
+    	}
+        
+        bw.close();
+        fw.close();
+        
+        System.out.println("output written to: " + FILENAME);
+        
     }
 
-    private void run() {
-        double time = 0;
-
-        double maxTime = 1000;
+	private String run(int run, int pEnter, int pLeave) {
+    	
+    	double time = 0;
+        double maxTime = 100;
+        Count count = new Count(run, pEnter, pLeave);
+        
         while (time < maxTime) {
         	
-        	if (time > 10) {
-        		for (Wall w : this.walls.getWalls().values())
+        	if (time > 10 && !doorsOpen) {
+        		for (Wall w : Simulation.walls.getWalls().values()){
         			if (w.isDoor()){
         				w.setOpen(true);
         			}
-        	}        	
+    			}
+    			this.doorsOpen = true;
+    			count.setDoorsOpeningTime(time);
+    			System.out.println("doors open at: " + time);
+        	} 	        	
         	
-            for (Vehicle v : this.vehs) {
-                v.update(this.vehs);
+//        	for (Vehicle v : Simulation.vehs){
+//        		if(!v.isLeaving()){
+//        			v.checkFreePath(vehs);
+//        		}
+//        	}
+        	
+            for (Vehicle v : Simulation.vehs) {
+                v.update(Simulation.vehs);
             }
-            Iterator<Vehicle> it = this.vehs.iterator();
+            count.checkPositions(Simulation.vehs, time);
+            
+            Iterator<Vehicle> it = Simulation.vehs.iterator();
             while (it.hasNext()) {
                 Vehicle v = it.next();
                 if(!v.move()){
                 	it.remove();
+                	System.out.println(vehs.size());
                 }
+            }
+            
+            if (vehs.size() == 0){
+            	String result = count.getResult();
+            	return result;
             }
 
             //
             List<VehicleInfo> vInfos = new ArrayList<>();
-            for (Vehicle v : this.vehs) {
-                VehicleInfo vi = new VehicleInfo(v.getX(), v.getY(), v.getR());
+            for (Vehicle v : Simulation.vehs) {
+                VehicleInfo vi = new VehicleInfo(v.getX(), v.getY(), v.getR(), v.getId(), v.getViewX(), v.getViewY(), v.getViewR(), v.isLeaving());
                 vInfos.add(vi);
             }
             this.vis.update(time, vInfos);
 
             time += H;
+            this.time = time;
 
             try {
                 Thread.sleep((long) (H * 1000));
@@ -157,9 +196,12 @@ public class Simulation {
                 e.printStackTrace();
             }
         }
+//        return count.getResult();
+        
+        return "Simulation failed... Time is over without all agents reaching their destination.";
     }
 
     private void add(Vehicle v1) {
-        this.vehs.add(v1);
+        Simulation.vehs.add(v1);
     }
 }

@@ -11,11 +11,27 @@ public class Dijkstra {
 	public Dijkstra() {
 		
 	}
+	
+	public List<Link> findRoute(double xFrom, double yFrom, boolean leaving){
+		if (leaving){
+			return this.findRoute(xFrom, yFrom, this.getLeavingDestination(xFrom, yFrom));
+		} else {
+			return this.findRoute(xFrom, yFrom, this.getEnteringDestination(xFrom, yFrom));
+		}
+	}
 
-	public List<Link> findRoute(double xFrom, double yFrom, int dest){
+	public List<Link> findRoute(double xFrom, double yFrom, Node dest){
 		
 		Node start = getClosestNode(xFrom, yFrom);
-		Node destination = Simulation.net.getNodes().get(dest);
+		Node destination = dest;
+		
+		List<Link> route = new ArrayList<>();
+		
+		if (start==destination){
+			
+			route.add(destination.getInLinks().get(0));
+			return route;
+		}
 		
 //		create Maps for costs and predecessor. add all nodes with maximum costs but without predecessors. start node with costs 0.
 		List<NodeInfo> nodeInfos = new LinkedList<NodeInfo>();
@@ -49,7 +65,6 @@ public class Dijkstra {
 		}
 		predecessors.add(start);
 		
-		List<Link> route = new ArrayList<>();
 		Node nodeFrom = predecessors.get(predecessors.size()-1);
 		while (nodeFrom != destination){
 			route.add(nodeFrom.getLinkToNode(predecessors.get(predecessors.size()-2)));
@@ -72,6 +87,38 @@ public class Dijkstra {
 			if (nodeDistance<closestDistance){
 				closestDistance = nodeDistance;
 				closest = n;
+			}
+		}
+		
+		return closest;
+	}
+	
+	private Node getLeavingDestination(double xFrom, double yFrom){
+		Node closest = null; 
+		double closestDistance = Double.POSITIVE_INFINITY;
+		for (Node n : Simulation.net.getNodes().values()){
+			if(n.getId() == 10 ||n.getId() == 11 ||n.getId() == 410 ||n.getId() == 411 ||n.getId() == 510 ||n.getId() == 511
+					 ||n.getId() == 610 ||n.getId() == 611 ||n.getId() == 710 ||n.getId() == 711 ||n.getId() == 810 ||n.getId() == 811){
+				double nodeDistance = (xFrom-n.getX())*(xFrom-n.getX())+(yFrom-n.getY())*(yFrom-n.getY());
+				if (nodeDistance<closestDistance){
+					closestDistance = nodeDistance;
+					closest = n;
+				}
+			}
+		}
+		
+		return closest;
+	}
+	private Node getEnteringDestination(double xFrom, double yFrom){
+		Node closest = null; 
+		double closestDistance = Double.POSITIVE_INFINITY;
+		for (Node n : Simulation.net.getNodes().values()){
+			if(n.getId() == 7 ||n.getId() == 47 ||n.getId() == 57 ||n.getId() == 67 ||n.getId() == 77 ||n.getId() == 87 ){
+				double nodeDistance = (xFrom-n.getX())*(xFrom-n.getX())+(yFrom-n.getY())*(yFrom-n.getY());
+				if (nodeDistance<closestDistance){
+					closestDistance = nodeDistance;
+					closest = n;
+				}
 			}
 		}
 		
